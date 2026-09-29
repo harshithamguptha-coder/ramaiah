@@ -29,7 +29,7 @@ async def lifespan(app: FastAPI):  # noqa: ARG001 - FastAPI signature
     """Prepare and tear down application resources."""
     ensure_directory(settings.upload_dir)
     logger.info("%s v%s starting in %s mode", settings.app_name, settings.app_version, settings.environment)
-    logger.info("Analysis engines are MOCK placeholders in this prototype.")
+    logger.info("Quantum analysis uses a local Qiskit Aer simulator; other analysis stages remain mocked.")
     yield
     logger.info("%s shutting down", settings.app_name)
 
@@ -40,8 +40,9 @@ DESCRIPTION = """
 Upload a dataset, describe the AI problem, and Q-Compass compares Classical AI,
 Quantum AI and Hybrid AI approaches for it.
 
-> **Prototype status:** the analysis pipeline currently returns deterministic
-> **mock data**. Only dataset ingestion and structural profiling are real.
+> **Prototype status:** dataset ingestion, structural profiling, and the
+> quantum feature-selection experiment are real. Classical comparison and
+> recommendation stages still contain mock data.
 > The response contract is final, so the engines can be replaced independently.
 """
 
@@ -75,7 +76,7 @@ def create_app() -> FastAPI:
         return {
             "service": settings.app_name,
             "version": settings.app_version,
-            "mode": "mock",
+            "mode": "mixed",
             "docs": "/docs",
             "health": "/api/health",
         }

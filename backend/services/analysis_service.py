@@ -43,7 +43,7 @@ def run_pipeline(
     dataset = dataset_service.build_dataset(metadata)
     problem = dataset_service.build_problem(problem_description, dataset)
     classical = classical_service.run(dataset, problem, analysis_id)
-    quantum = quantum_service.run(dataset, problem, analysis_id)
+    quantum = quantum_service.run(dataset, problem, analysis_id, metadata)
     comparison = comparison_service.run(classical, quantum, dataset, analysis_id)
     recommendation = recommendation_service.run(
         comparison, classical, quantum, problem, dataset, analysis_id
@@ -53,7 +53,7 @@ def run_pipeline(
         "analysis_id": analysis_id,
         "status": "completed",
         "created_at": utc_now_iso(),
-        "data_source": "mock",
+        "data_source": "mixed",
         "mock_data": True,
         "problem_description": problem_description or "",
         "file_metadata": metadata,

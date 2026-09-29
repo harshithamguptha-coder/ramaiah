@@ -19,7 +19,7 @@ def health() -> HealthResponse:
         service=settings.app_name,
         version=settings.app_version,
         environment=settings.environment,
-        mode="mock",
+        mode="mixed",
         time=utc_now_iso(),
     )
 
@@ -28,15 +28,14 @@ def health() -> HealthResponse:
 def meta() -> dict:
     """Describe what the API currently supports, so the UI can adapt."""
     return {
-        "analysis_mode": "mock",
+        "analysis_mode": "mixed",
         "mock_data": True,
         "supported_formats": [ext.lstrip(".") for ext in settings.allowed_extensions],
         "max_upload_mb": settings.max_upload_bytes // (1024 * 1024),
-        "implemented": ["upload", "structural-profiling", "mock-analysis-pipeline"],
+        "implemented": ["upload", "structural-profiling", "local-qiskit-qaoa", "mixed-analysis-pipeline"],
         "not_implemented": [
             "classical-model-training",
             "feature-selection",
-            "quantum-circuit-execution",
             "recommendation-engine",
         ],
     }
