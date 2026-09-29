@@ -55,6 +55,7 @@ def run_pipeline(
         "created_at": utc_now_iso(),
         "data_source": "mixed",
         "mock_data": True,
+        "quantum_analysis_real": quantum.get("quantum_analysis_real", False),
         "problem_description": problem_description or "",
         "file_metadata": metadata,
         "pipeline": build_pipeline(completed_through="report"),
