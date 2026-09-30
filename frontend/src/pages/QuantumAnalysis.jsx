@@ -3,7 +3,7 @@
 import { Link } from 'react-router-dom'
 import RequireAnalysis from '../components/RequireAnalysis'
 import PipelineStepper from '../components/PipelineStepper'
-import { Alert, Badge, Button, Card, CardBody, CardFooter, CardHeader, MockBadge, StatTile } from '../components/ui'
+import { Alert, Badge, Button, Card, CardBody, CardFooter, CardHeader, StatTile } from '../components/ui'
 import { BarChart, ScoreGauge } from '../components/charts'
 import { useAnalysisContext } from '../context/AnalysisContext'
 
@@ -15,6 +15,10 @@ export default function QuantumAnalysis() {
 
   const circuits = quantum.circuit_complexity
   const resources = quantum.estimated_resources
+  const execution = quantum.execution || {}
+  const executed = quantum.status === 'completed'
+  const realExecution = quantum.quantum_analysis_real === true
+  const dataSourceLabel = quantum.data_source === 'real' ? 'Real' : quantum.data_source === 'unavailable' ? 'Unavailable' : quantum.data_source || 'Unknown'
 
   return (
     <RequireAnalysis
@@ -22,7 +26,7 @@ export default function QuantumAnalysis() {
       subtitle="Pipeline stage 4 of 7 — quantum suitability, candidate algorithms and resource estimates."
     >
       <Card accent="quantum">
-        <CardHeader title="Analysis pipeline" actions={<MockBadge label="All values mocked" />} />
+        <CardHeader title="Analysis pipeline" actions={<Badge tone={realExecution ? 'success' : 'warning'}>{realExecution ? 'Real local Qiskit execution' : 'Quantum execution unavailable'}</Badge>} />
         <CardBody>
           <PipelineStepper pipeline={pipeline} current={3} />
         </CardBody>
@@ -47,9 +51,9 @@ export default function QuantumAnalysis() {
         />
         <StatTile label="Circuit depth" value={circuits.depth} hint={`${circuits.gate_count} gates`} />
         <StatTile
-          label="Feasibility"
-          value={quantum.feasibility}
-          hint={`confidence ${Math.round(quantum.confidence * 100)}%`}
+          label="Execution time"
+          value={executed ? `${execution.execution_time_sec}s` : '—'}
+          hint={executed ? `${execution.shots?.toLocaleString()} local shots` : 'No result'}
         />
       </div>
 
@@ -59,7 +63,7 @@ export default function QuantumAnalysis() {
             <CardHeader
               title="Candidate quantum algorithms"
               subtitle={`Primary candidate: ${quantum.primary_algorithm}`}
-              actions={<MockBadge />}
+              actions={<Badge tone={executed ? 'success' : 'warning'}>{quantum.status}</Badge>}
             />
             <CardBody tight>
               <div className="table-wrap">
@@ -147,6 +151,28 @@ export default function QuantumAnalysis() {
           </Card>
 
           <Card>
+            <CardHeader title="Measured QAOA result" />
+            <CardBody>
+              <dl className="dl">
+                <dt>Status</dt>
+                <dd>{quantum.status}</dd>
+                <dt>Data source</dt>
+                <dd>{dataSourceLabel}</dd>
+                <dt>Objective / cost</dt>
+                <dd>{execution.objective_value ?? '—'}</dd>
+                <dt>Expected objective</dt>
+                <dd>{execution.expected_objective_value ?? '—'}</dd>
+                <dt>Parameter trials</dt>
+                <dd>{execution.iterations ?? 0}</dd>
+                <dt>Highest-probability graph partition</dt>
+                <dd className="mono small">{execution.best_partition_bitstring ?? execution.best_bitstring ?? '—'}</dd>
+              </dl>
+              {execution.features?.length ? <p className="small muted mt-2">Feature graph: {execution.features.join(', ')}</p> : null}
+              <p className="small muted mt-2">{execution.partition_interpretation}</p>
+            </CardBody>
+          </Card>
+
+          <Card>
             <CardHeader title="Circuit complexity" />
             <CardBody>
               <dl className="dl">
@@ -156,9 +182,20 @@ export default function QuantumAnalysis() {
                 <dd>{circuits.gate_count.toLocaleString()}</dd>
                 <dt>2-qubit gate ratio</dt>
                 <dd>{Math.round(circuits.two_qubit_gate_ratio * 100)}%</dd>
+                <dt>Feasibility</dt>
+                <dd>{quantum.feasibility}</dd>
                 <dt>Summary</dt>
                 <dd className="small">{circuits.summary}</dd>
               </dl>
+            </CardBody>
+          </Card>
+
+          <Card>
+            <CardHeader title="Suitability decision" subtitle={quantum.recommended_approach} />
+            <CardBody>
+              <ul className="small stack stack--sm">
+                {(quantum.suitability?.reasons || []).map((reason) => <li key={reason}>{reason}</li>)}
+              </ul>
             </CardBody>
           </Card>
 
@@ -194,10 +231,10 @@ export default function QuantumAnalysis() {
             </CardBody>
           </Card>
 
-          <Alert tone="warning" title="No circuit was built or executed">
-            Qubit counts, depths and feasibility are illustrative. The real stage will run a
-            feature-reduction step, construct the circuit, and execute it on a simulator before any
-            hardware is involved.
+          <Alert tone={executed ? 'warning' : 'danger'} title={executed ? 'Interpret results carefully' : 'Quantum execution unavailable'}>
+            {executed
+              ? 'This is a real local simulator measurement for a QAOA-based feature-relationship optimisation / feature-selection experiment. The partition is not a final selected-feature subset and does not demonstrate quantum advantage.'
+              : (quantum.error || 'The circuit could not be executed for this input. Classical computing is recommended.')}
           </Alert>
 
           <div className="row row--between">
