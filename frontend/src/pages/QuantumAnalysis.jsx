@@ -3,7 +3,7 @@
 import { Link } from 'react-router-dom'
 import RequireAnalysis from '../components/RequireAnalysis'
 import PipelineStepper from '../components/PipelineStepper'
-import { Alert, Badge, Button, Card, CardBody, CardFooter, CardHeader, MeterRow, SourceBadge, StatTile } from '../components/ui'
+import { Alert, Badge, Button, Card, CardBody, CardFooter, CardHeader, StatTile } from '../components/ui'
 import { BarChart, ScoreGauge } from '../components/charts'
 import { useAnalysisContext } from '../context/AnalysisContext'
 
@@ -12,6 +12,13 @@ const SUITABILITY_TONE = { High: 'success', Moderate: 'warning', Low: 'danger' }
 export default function QuantumAnalysis() {
   const { quantum, pipeline } = useAnalysisContext()
 
+  const circuits = quantum?.circuit_complexity ?? {}
+  const resources = quantum?.estimated_resources ?? {}
+  const execution = quantum?.execution ?? {}
+  const executed = quantum?.status === 'completed'
+  const realExecution = quantum?.quantum_analysis_real === true
+  const dataSourceLabel = quantum?.data_source === 'real' ? 'Real' : quantum?.data_source === 'unavailable' ? 'Unavailable' : quantum?.data_source || 'Unknown'
+
   return (
     <RequireAnalysis
       title="Quantum AI Analysis"
@@ -19,23 +26,10 @@ export default function QuantumAnalysis() {
       stage={quantum}
       stageLabel="Quantum AI analysis"
     >
-      {quantum ? <QuantumStage quantum={quantum} pipeline={pipeline} /> : null}
-    </RequireAnalysis>
-  )
-}
-
-/** Stage body — see the note in ClassicalAnalysis.jsx about the split. */
-function QuantumStage({ quantum, pipeline }) {
-  const circuits = quantum.circuit_complexity
-  const resources = quantum.estimated_resources
-
-  return (
-    <>
+      {quantum ? (
+        <>
       <Card accent="quantum">
-        <CardHeader
-          title="Analysis pipeline"
-          actions={<SourceBadge block={quantum} label="Factor model" />}
-        />
+        <CardHeader title="Analysis pipeline" actions={<Badge tone={realExecution ? 'success' : 'warning'}>{realExecution ? 'Real local Qiskit execution' : 'Quantum execution unavailable'}</Badge>} />
         <CardBody>
           <PipelineStepper pipeline={pipeline} current={3} />
         </CardBody>
@@ -60,9 +54,9 @@ function QuantumStage({ quantum, pipeline }) {
         />
         <StatTile label="Circuit depth" value={circuits.depth} hint={`${circuits.gate_count} gates`} />
         <StatTile
-          label="Feasibility"
-          value={quantum.feasibility}
-          hint={`confidence ${Math.round(quantum.confidence * 100)}%`}
+          label="Execution time"
+          value={executed ? `${execution.execution_time_sec}s` : '—'}
+          hint={executed ? `${execution.shots?.toLocaleString()} local shots` : 'No result'}
         />
       </div>
 
@@ -72,7 +66,7 @@ function QuantumStage({ quantum, pipeline }) {
             <CardHeader
               title="Candidate quantum algorithms"
               subtitle={`Primary candidate: ${quantum.primary_algorithm}`}
-              actions={<SourceBadge block={quantum} label="Scored" />}
+              actions={<Badge tone={executed ? 'success' : 'warning'}>{quantum.status}</Badge>}
             />
             <CardBody tight>
               <div className="table-wrap">
@@ -93,11 +87,6 @@ function QuantumStage({ quantum, pipeline }) {
                         <td>
                           <div style={{ fontWeight: 650 }}>{algo.name}</div>
                           <div className="small muted">{algo.notes}</div>
-                          {algo.blocking_issues?.length > 0 && (
-                            <div className="small" style={{ color: 'var(--danger)' }}>
-                              Blocked: {algo.blocking_issues.join(' ')}
-                            </div>
-                          )}
                         </td>
                         <td className="muted">{algo.family}</td>
                         <td className="num">{algo.qubits_required}</td>
@@ -165,39 +154,24 @@ function QuantumStage({ quantum, pipeline }) {
           </Card>
 
           <Card>
-            <CardHeader
-              title="Scoring factors"
-              subtitle={quantum.scoring?.formula || 'Weighted sum of normalised factors.'}
-            />
+            <CardHeader title="Measured QAOA result" />
             <CardBody>
-              <div className="stack stack--sm">
-                {(quantum.scoring?.factors || []).map((factor) => (
-                  <MeterRow
-                    key={factor.key}
-                    label={factor.label || factor.key}
-                    value={(factor.normalised ?? 0) * 100}
-                    tone={
-                      factor.normalised >= 0.66 ? 'success' : factor.normalised >= 0.33 ? 'warning' : 'danger'
-                    }
-                    displayValue={`${Math.round((factor.normalised ?? 0) * 100)}% × ${factor.weight}`}
-                  />
-                ))}
-              </div>
-              {quantum.scoring?.caps_applied?.length > 0 && (
-                <div className="mt-4">
-                  <div className="stat__label mb-2">Hard caps applied</div>
-                  <ul className="small stack stack--sm">
-                    {quantum.scoring.caps_applied.map((cap) => (
-                      <li key={cap.cap}>
-                        Capped at {cap.cap}/100 — {cap.why}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              <p className="small muted mt-2">
-                Raw score {quantum.scoring?.raw_score}/100 before caps.
-              </p>
+              <dl className="dl">
+                <dt>Status</dt>
+                <dd>{quantum.status}</dd>
+                <dt>Data source</dt>
+                <dd>{dataSourceLabel}</dd>
+                <dt>Objective / cost</dt>
+                <dd>{execution.objective_value ?? '—'}</dd>
+                <dt>Expected objective</dt>
+                <dd>{execution.expected_objective_value ?? '—'}</dd>
+                <dt>Parameter trials</dt>
+                <dd>{execution.iterations ?? 0}</dd>
+                <dt>Highest-probability graph partition</dt>
+                <dd className="mono small">{execution.best_partition_bitstring ?? execution.best_bitstring ?? '—'}</dd>
+              </dl>
+              {execution.features?.length ? <p className="small muted mt-2">Feature graph: {execution.features.join(', ')}</p> : null}
+              <p className="small muted mt-2">{execution.partition_interpretation}</p>
             </CardBody>
           </Card>
 
@@ -208,12 +182,23 @@ function QuantumStage({ quantum, pipeline }) {
                 <dt>Depth</dt>
                 <dd>{circuits.depth}</dd>
                 <dt>Gate count</dt>
-                <dd>{circuits.gate_count.toLocaleString()}</dd>
+                <dd>{(circuits.gate_count ?? 0).toLocaleString()}</dd>
                 <dt>2-qubit gate ratio</dt>
                 <dd>{Math.round(circuits.two_qubit_gate_ratio * 100)}%</dd>
+                <dt>Feasibility</dt>
+                <dd>{quantum.feasibility}</dd>
                 <dt>Summary</dt>
                 <dd className="small">{circuits.summary}</dd>
               </dl>
+            </CardBody>
+          </Card>
+
+          <Card>
+            <CardHeader title="Suitability decision" subtitle={quantum.recommended_approach} />
+            <CardBody>
+              <ul className="small stack stack--sm">
+                {(quantum.suitability?.reasons || []).map((reason) => <li key={reason}>{reason}</li>)}
+              </ul>
             </CardBody>
           </Card>
 
@@ -228,7 +213,7 @@ function QuantumStage({ quantum, pipeline }) {
                 <dt>Queue time</dt>
                 <dd>{resources.expected_queue_time}</dd>
                 <dt>Shots</dt>
-                <dd>{resources.shots.toLocaleString()}</dd>
+                <dd>{(resources.shots ?? 0).toLocaleString()}</dd>
                 <dt>Cost / shot</dt>
                 <dd>{resources.cost_per_shot}</dd>
               </dl>
@@ -249,9 +234,10 @@ function QuantumStage({ quantum, pipeline }) {
             </CardBody>
           </Card>
 
-          <Alert tone="info" title="This is a suitability analysis, not an experiment">
-            {quantum.score_interpretation ||
-              'No quantum circuit was built or executed. The score above measures how worth investigating quantum methods are, not how well they would perform.'}
+          <Alert tone={executed ? 'warning' : 'danger'} title={executed ? 'Interpret results carefully' : 'Quantum execution unavailable'}>
+            {executed
+              ? 'This is a real local simulator measurement for a QAOA-based feature-relationship optimisation / feature-selection experiment. The partition is not a final selected-feature subset and does not demonstrate quantum advantage.'
+              : (quantum.error || 'The circuit could not be executed for this input. Classical computing is recommended.')}
           </Alert>
 
           <div className="row row--between">
@@ -264,7 +250,8 @@ function QuantumStage({ quantum, pipeline }) {
           </div>
         </div>
       </div>
-    </>
+        </>
+      ) : null}
+    </RequireAnalysis>
   )
 }
-

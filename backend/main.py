@@ -32,7 +32,10 @@ async def lifespan(app: FastAPI):  # noqa: ARG001 - FastAPI signature
     logger.info(
         "%s v%s starting in %s mode", settings.app_name, settings.app_version, settings.environment
     )
-    logger.info("Analysis engine: real profiling, real classical training, theoretical quantum scoring.")
+    logger.info(
+        "Analysis engine: real profiling, real classical training, "
+        "real QAOA circuit execution on a local Qiskit Aer simulator."
+    )
     yield
     logger.info("%s shutting down", settings.app_name)
 
@@ -44,9 +47,10 @@ Upload a dataset, describe the AI problem, and Q-Compass compares Classical AI,
 Quantum AI and Hybrid AI approaches for it.
 
 > **Scope of the analysis.** The classical stage trains real models and reports
-> measured scores. The quantum stage is a *theoretical suitability analysis*: it
-> scores how worth investigating quantum methods are, from transparent factors.
-> No circuit is executed and no quantum performance is claimed.
+> measured scores. The quantum stage builds and executes a real QAOA circuit on a
+> **local Qiskit Aer simulator**, so its circuit metrics and objective values are
+> measured rather than estimated. No quantum hardware is used and no quantum
+> advantage is claimed.
 """
 
 

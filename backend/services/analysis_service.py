@@ -90,7 +90,10 @@ def run_pipeline(
         frame,
     )
     classical = _safe("classical baseline", classical_service.run, dataset, problem, analysis_id, frame)
-    quantum = _safe("quantum suitability", quantum_service.run, dataset, problem, analysis_id, frame)
+    # The QAOA stage reads the stored file itself (it needs the raw rows to build a
+    # feature-correlation graph), so it is handed the upload metadata rather than the
+    # shared DataFrame every other stage uses.
+    quantum = _safe("quantum suitability", quantum_service.run, dataset, problem, analysis_id, metadata)
     comparison = _safe("comparison", comparison_service.run, classical, quantum, dataset, analysis_id)
     recommendation = _safe(
         "recommendation",
@@ -109,6 +112,8 @@ def run_pipeline(
         "created_at": utc_now_iso(),
         "data_source": "real",
         "mock_data": False,
+        # True only when the QAOA stage actually executed a circuit locally.
+        "quantum_analysis_real": quantum.get("quantum_analysis_real", False),
         "problem_description": problem_description or "",
         "file_metadata": metadata,
         "pipeline": build_pipeline(completed_through="report"),

@@ -91,16 +91,16 @@ def test_dataset2_identifies_quantum_feature_selection(analyze_csv):
     assert characteristics["estimated_search_space_log2"] == 48.0
     assert payload["dataset"]["feature_count"] == 48
 
-    # Feature selection is the top candidate.
-    assert "Quantum Feature Selection" in quantum["potential_methods"]
-    assert quantum["primary_algorithm"] == "Quantum Feature Selection"
+    # QAOA feature-relationship optimisation is the quantum candidate, bounded by
+    # the local simulator's qubit cap rather than by the dataset width.
+    assert quantum["potential_methods"] == ["QAOA"]
+    assert quantum["primary_algorithm"].startswith("QAOA")
+    assert 0 <= quantum["qubits_required"] <= 6
 
-    # The search-space factor did real work in the score.
-    factors = {f["key"]: f for f in quantum["scoring"]["factors"]}
-    assert factors["search_space_complexity"]["normalised"] > 0.5
-    assert factors["feature_dimensionality"]["normalised"] < 0.5, (
-        "48 features must be penalised for encoding, not treated as easy"
-    )
+    # The reported factors are the ones the executed circuit actually measured.
+    factors = {f["factor"]: f for f in quantum["suitability"]["factors"]}
+    assert {"Quantum formulation", "Qubit budget", "Circuit complexity"} <= factors.keys()
+    assert 0 <= quantum["suitability_score"] <= 100
 
 
 def test_dataset2_does_not_claim_quantum_will_win(analyze_csv):
@@ -113,8 +113,9 @@ def test_dataset2_does_not_claim_quantum_will_win(analyze_csv):
     comparison = payload["comparison"]
 
     assert quantum["execution"]["hardware_executed"] is False
-    assert quantum["execution"]["mode"] == "theoretical-suitability-analysis"
-    assert "does NOT" in quantum["score_interpretation"]
+    assert quantum["execution"]["mode"] == "local-qiskit-aer-simulation"
+    # Simulator output is never dressed up as a quantum performance claim.
+    assert any("not quantum advantage" in limit for limit in quantum["limitations"])
 
     accuracy_row = next(
         c for c in comparison["criteria"] if c["criterion"] == "Accuracy / Precision"
@@ -152,10 +153,10 @@ def test_dataset3_detects_optimisation_and_surfaces_qaoa(analyze_csv):
         "there is no target column, so the text must be what drives the verdict"
     )
     assert "QAOA" in quantum["potential_methods"]
-    assert quantum["primary_algorithm"] == "QAOA"
+    assert quantum["primary_algorithm"].startswith("QAOA")
 
-    factors = {f["key"]: f for f in quantum["scoring"]["factors"]}
-    assert factors["optimization_suitability"]["normalised"] == 1.0
+    factors = {f["factor"]: f for f in quantum["suitability"]["factors"]}
+    assert factors["Quantum formulation"]["points"] > 0
 
 
 def test_dataset3_skips_supervised_baseline_correctly(analyze_csv):
