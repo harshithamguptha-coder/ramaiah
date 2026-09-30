@@ -375,12 +375,13 @@ curl -X POST http://127.0.0.1:8000/api/analyze \
 | Row / column counts, feature types, missing values, duplicates, cardinality, class distribution, target column | **Real** |
 | Task-type characterisation (classification / regression / clustering / optimisation / unknown) | **Real** (structural + keyword disambiguation) |
 | Classical model training and metrics | **Real** (scikit-learn, measured on a hold-out split) |
-| Quantum suitability score | **Real scoring** (6 transparent weighted factors + hard caps) |
+| Quantum suitability score | **Real** (5 transparent factors over the executed circuit) |
+| Quantum circuit build + simulation | **Real** (p=1 QAOA on a local Qiskit Aer simulator) |
 | Comparison matrix, winner, radar data | **Real** (derived from measured inputs) |
 | Recommendation, confidence, reasoning, next steps | **Real** (ordered decision gates) |
 | Pipeline orchestration and persistence | **Real** |
 | Markdown report download | **Real** |
-| Quantum circuit execution / hardware results | **Not implemented, and not claimed** |
+| Quantum **hardware** execution / results | **Not implemented, and not claimed** |
 
 Mock values are gone: `models/mock/` now contains only the static pipeline-stage
 definitions the UI stepper needs. Every block reports `is_mock: false`, and
@@ -422,22 +423,23 @@ important ones:
 
 ```bash
 cd backend
-pytest              # 54 tests
+pytest              # 102 tests
 ```
 
 | File | Covers |
 |---|---|
-| `tests/test_scenarios.py` | The three required datasets — outcome **and** reasoning |
+| `tests/test_scenarios.py` | The required datasets — outcome **and** reasoning |
 | `tests/test_errors.py` | Every error path (bad type, empty, unparseable, too few rows, single class, long description, ...) |
 | `tests/test_api_contract.py` | Every key the React pages read still exists and is usable |
-| `tests/test_scoring.py` | The scoring formula, reproducibility, monotonicity, caps and bounds |
+| `tests/test_quantum_service.py` | QAOA execution, graceful simulator failure, honest reporting |
+| `tests/test_scoring.py` | Cross-stage decision invariants and bounded confidence |
 
 The three required scenarios:
 
 1. **Small classification** → a model is trained, beats the majority-class
    floor, classical is reported `High` feasibility, and classical is recommended.
-2. **High-dimensional feature selection** → *Quantum Feature Selection* becomes
-   the top candidate, while the accuracy row still refuses to claim a quantum
+2. **High-dimensional feature selection** → *QAOA* becomes the top quantum
+   candidate, while the accuracy row still refuses to claim a quantum
    number.
 3. **Optimisation framing** → the task type comes from the statement (there is no
    target column at all), *QAOA* is the top candidate, and no predictive model is
