@@ -5,9 +5,10 @@
 > scored**, scores **quantum suitability** from transparent factors, and
 > recommends Classical, Hybrid or Quantum AI via explicit decision rules.
 >
-> **What it does not do.** It never claims a quantum advantage. No quantum
-> circuit is built or executed, no quantum performance is fabricated, and
-> **Classical AI is the default** — Quantum AI has to earn its way out.
+> **What it does not do.** It never claims a quantum advantage. The quantum
+> stage runs on a **local simulator**, never on quantum hardware, and no
+> hardware performance is fabricated. **Classical AI is the default** —
+> Quantum AI has to earn its way out.
 >
 > Full engine documentation: **[`backend/services/README.md`](backend/services/README.md)**.
 
@@ -68,7 +69,7 @@ decision gate which fired.
 | 1 | Dataset uploaded | `/upload` | **Real** (parse + profile) |
 | 2 | Dataset & problem analysis | `/analysis` | **Real** (structure + task characterisation) |
 | 3 | Classical analysis | `/classical` | **Real** (models trained, metrics measured) |
-| 4 | Quantum analysis | `/quantum` | **Real scoring** (theoretical, not executed) |
+| 4 | Quantum analysis | `/quantum` | **Real** (QAOA circuit executed on a local Qiskit Aer simulator) |
 | 5 | Comparison | `/comparison` | **Real** (derived from measured inputs) |
 | 6 | Recommendation | `/recommendation` | **Real** (decision rules) |
 | 7 | Report generation | `/report` | **Real** (Markdown export) |
@@ -125,8 +126,8 @@ upload → profiling → classical → quantum → comparison → recommendation
 | Ingest + dataset block | `services/dataset_service.py` | validate, store, parse once, cache the frame |
 | Problem classification | `services/problem_service.py` | task type + measured characteristics |
 | Classical benchmarking | `services/classical_service.py` | trains scikit-learn models, reports measured metrics |
-| Quantum suitability | `services/quantum_service.py` | 6-factor transparent scoring + hard caps |
-| Quantum *experiment* | *(future)* | Qiskit / PennyLane circuit + simulator — see [plugging in](#backend-servicessreadmemd) |
+| Quantum suitability | `services/quantum_service.py` | 5-factor transparent scoring over the executed circuit |
+| Quantum *experiment* | `services/quantum_service.py` | builds a p=1 QAOA Max-Cut graph from feature correlations and runs it on a local Qiskit Aer simulator |
 | Comparison scoring | `services/comparison_service.py` | weighted matrix with per-cell `basis` tags |
 | Recommendation | `services/recommendation_service.py` | ordered decision gates (G2–G5) |
 | Report | `services/report_service.py` | structured sections + Markdown |
@@ -393,13 +394,16 @@ Read these before trusting a number. The full list is in
 [`backend/services/README.md`](backend/services/README.md#limitations); the most
 important ones:
 
-- **No quantum result exists.** The quantum stage is a *theoretical suitability
-  analysis*. No circuit is built or executed, and no quantum performance is
-  claimed anywhere in the payload.
+- **No quantum hardware is used, and no quantum advantage is claimed.** The
+  quantum stage builds and executes a real QAOA circuit, but on a *local Qiskit
+  Aer simulator*. Its circuit metrics and objective values are genuinely
+  measured; they say nothing about performance on a real QPU.
+- **The QAOA partition is not a feature selection.** It partitions a
+  feature-correlation graph as an optimisation signal. It is not a validated
+  selected-feature subset and does not replace classical model validation.
 - **The suitability score is a prioritisation heuristic, not a physical model.**
-  Its weights are defensible and fully disclosed in `quantum_analysis.scoring`,
-  but they are a judgement call, and the hard caps are policy rather than
-  physics.
+  Its weights are defensible and fully disclosed in `quantum_analysis.suitability`,
+  but they are a judgement call.
 - **The classical baselines are baselines, not best results.** Models are cheap
   and untuned on purpose. A tuned ensemble will beat them.
 - **Large files are sampled** above `ANALYSIS_MAX_ROWS`, and the payload says so

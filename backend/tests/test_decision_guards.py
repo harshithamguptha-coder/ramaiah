@@ -39,7 +39,9 @@ def _analyse(tmp_path, frame, name, description):
     )
     frame_obj = get_frame(meta["file_id"])
     problem = problem_service.build_problem(description, dataset, frame_obj)
-    return dataset, problem, frame_obj
+    # `meta` is returned because the QAOA stage reads the stored file itself rather
+    # than the shared DataFrame every other stage consumes.
+    return dataset, problem, frame_obj, meta
 
 
 # ---------------------------------------------------------------------------
@@ -59,7 +61,7 @@ def test_flag_column_is_not_mistaken_for_the_target(tmp_path):
             "sale_price": rng.lognormal(12, 0.2, 200).round(2),  # the real target
         }
     )
-    dataset, problem, _ = _analyse(
+    dataset, problem, _, _ = _analyse(
         tmp_path, frame, "houses.csv", "Estimate the sale price of a house."
     )
     assert dataset["target_column"] == "sale_price", (
@@ -74,7 +76,7 @@ def test_bare_flag_is_not_guessed_when_a_continuous_column_exists(tmp_path):
     frame = pd.DataFrame(
         {"flag1": np.tile([1, 0], 60), "score_a": np.linspace(0, 1, 120)}
     )
-    dataset, _, _ = _analyse(tmp_path, frame, "bare.csv", "Do something useful.")
+    dataset, _, _, _ = _analyse(tmp_path, frame, "bare.csv", "Do something useful.")
     assert dataset["target_column"] is None, (
         "a column with no name or description evidence must not become a target"
     )
@@ -89,7 +91,7 @@ def test_string_label_is_still_detected(tmp_path):
             "is_churned": ["Yes", "No"] * 50,
         }
     )
-    dataset, _, _ = _analyse(tmp_path, frame, "churn.csv", "Predict churn.")
+    dataset, _, _, _ = _analyse(tmp_path, frame, "churn.csv", "Predict churn.")
     assert dataset["target_column"] == "is_churned"
     assert dataset["problem_type"] == "classification"
 
@@ -102,7 +104,7 @@ def test_numeric_label_used_when_no_continuous_column_exists(tmp_path):
             "region": ["North", "South", "East", "West"] * 30,
         }
     )
-    dataset, _, _ = _analyse(tmp_path, frame, "fraud.csv", "Detect fraud.")
+    dataset, _, _, _ = _analyse(tmp_path, frame, "fraud.csv", "Detect fraud.")
     assert dataset["target_column"] == "fraud_flag"
     assert dataset["problem_type"] == "classification"
 
@@ -112,7 +114,7 @@ def test_domain_named_label_is_detected_even_with_a_continuous_column(tmp_path):
     frame = pd.DataFrame(
         {"fraud_flag": np.tile([1, 0], 60), "score_a": np.linspace(0, 1, 120)}
     )
-    dataset, problem, _ = _analyse(tmp_path, frame, "fraud.csv", "Detect fraud.")
+    dataset, problem, _, _ = _analyse(tmp_path, frame, "fraud.csv", "Detect fraud.")
     assert dataset["target_column"] == "fraud_flag"
     assert problem["problem_type"] == "classification"
 
@@ -148,9 +150,9 @@ def _recommend(tmp_path, frame, name, description):
         recommendation_service,
     )
 
-    dataset, problem, frame_obj = _analyse(tmp_path, frame, name, description)
+    dataset, problem, frame_obj, meta = _analyse(tmp_path, frame, name, description)
     classical = classical_service.run(dataset, problem, "an_test", frame_obj)
-    quantum = quantum_service.run(dataset, problem, "an_test", frame_obj)
+    quantum = quantum_service.run(dataset, problem, "an_test", meta)
     comparison = comparison_service.run(classical, quantum, dataset, "an_test")
     return classical, quantum, recommendation_service.run(
         comparison, classical, quantum, problem, dataset, "an_test"

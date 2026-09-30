@@ -40,24 +40,25 @@ def meta() -> dict:
             "dataset-profiling",
             "problem-characterization",
             "classical-model-training",
-            "quantum-suitability-scoring",
+            "local-qiskit-qaoa-execution",
             "comparison",
             "recommendation-engine",
             "report-generation",
         ],
         "not_implemented": [
-            "quantum-circuit-execution",
             "quantum-hardware-execution",
             "measured-quantum-performance",
         ],
         "quantum": {
             "framework_available": framework,
             "framework": framework,
-            "execution_mode": "theoretical-suitability-analysis",
+            "execution_mode": "local-qiskit-aer-simulation",
             "hardware_executed": False,
             "statement": (
-                "Quantum suitability is scored from measured dataset properties. "
-                "No circuit is executed and no quantum performance is claimed."
+                "A QAOA circuit is built from the dataset's feature-correlation graph and "
+                "executed on a local Qiskit Aer simulator, so circuit metrics and objective "
+                "values are measured. No quantum hardware is used and no quantum advantage "
+                "is claimed."
             ),
         },
         "philosophy": (
