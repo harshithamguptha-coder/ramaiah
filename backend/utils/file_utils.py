@@ -51,7 +51,7 @@ def validate_size(size_bytes: int, max_bytes: int) -> None:
         )
     if size_bytes > max_bytes:
         raise HTTPException(
-            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            status_code=413,
             detail=f"File exceeds the {max_bytes // (1024 * 1024)} MB upload limit.",
         )
 

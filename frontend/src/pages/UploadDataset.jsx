@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PageHeader from '../components/PageHeader'
-import { Alert, Badge, Button, Card, CardBody, CardHeader, MockBadge } from '../components/ui'
+import { Alert, Badge, Button, Card, CardBody, CardHeader } from '../components/ui'
 import Icon from '../components/ui/Icon'
 import { useAnalysisContext } from '../context/AnalysisContext'
 import { ACCEPTED_FILE_TYPES, MAX_UPLOAD_MB, PROBLEM_PLACEHOLDER } from '../constants/navigation'
@@ -16,11 +16,25 @@ export default function UploadDataset() {
 
   const [file, setFile] = useState(null)
   const [description, setDescription] = useState('')
+  const [targetColumn, setTargetColumn] = useState('')
   const [dragging, setDragging] = useState(false)
   const [status, setStatus] = useState('idle') // idle | uploading | uploaded | analyzing
   const [error, setError] = useState(null)
 
   const extension = file ? `.${file.name.split('.').pop().toLowerCase()}` : ''
+  // What the backend auto-detected, used to prefill the hint and the placeholder.
+  const detectedTarget = analysis?.dataset?.target_column || ''
+
+/** Shown while the single backend pass is running. */
+const ANALYSIS_STAGES = [
+  'Analyzing dataset',
+  'Characterising the problem',
+  'Training classical baselines',
+  'Scoring quantum suitability',
+  'Comparing approaches',
+  'Generating recommendation',
+  'Generating report',
+]
 
   /** Client-side validation mirrors the backend rules for instant feedback. */
   function validate(candidate) {
@@ -58,7 +72,8 @@ export default function UploadDataset() {
     setStatus('uploading')
     setError(null)
     try {
-      await upload(file, description.trim())
+      const result = await upload(file, description.trim(), targetColumn.trim())
+      console.log('[Q-Compass] UPLOAD ANALYSIS ID:', result.analysis_id)
       setStatus('uploaded')
     } catch (err) {
       setError(err.message)
@@ -70,7 +85,11 @@ export default function UploadDataset() {
     setStatus('analyzing')
     setError(null)
     try {
-      await startAnalysis(description.trim())
+      // The completed response *is* the analysis; the context adopts its id, so
+      // there is no second fetch and the two ids cannot disagree.
+      const completed = await startAnalysis(description.trim(), targetColumn.trim())
+      console.log('[Q-Compass] ANALYZE RESPONSE ID:', completed.analysis_id)
+      console.log('[Q-Compass] NAVIGATING TO: /analysis (id =', completed.analysis_id, ')')
       navigate('/analysis')
     } catch (err) {
       setError(err.message)
@@ -174,7 +193,6 @@ export default function UploadDataset() {
             <CardHeader
               title="2. Describe your AI problem"
               subtitle="Optional, but it improves the task-type inference."
-              actions={<MockBadge label="Heuristic (mock)" />}
             />
             <CardBody>
               <div className="field">
@@ -192,6 +210,31 @@ export default function UploadDataset() {
                 />
                 <span className="field__hint">
                   {description.length}/2000 characters. Used to infer the learning task type.
+                </span>
+              </div>
+
+              <div className="field mt-4">
+                <label className="field__label" htmlFor="target-column">
+                  Target column <span className="field__optional">(optional)</span>
+                </label>
+                <input
+                  id="target-column"
+                  className="input"
+                  list="uploaded-columns"
+                  value={targetColumn}
+                  onChange={(e) => setTargetColumn(e.target.value)}
+                  placeholder={detectedTarget || 'e.g. quality'}
+                  maxLength={200}
+                />
+                <datalist id="uploaded-columns">
+                  {(analysis?.dataset?.column_names || []).map((name) => (
+                    <option key={name} value={name} />
+                  ))}
+                </datalist>
+                <span className="field__hint">
+                  {analysis?.dataset?.target_column
+                    ? `Auto-detected "${analysis.dataset.target_column}". Set this only if that is wrong.`
+                    : 'No target column was auto-detected. Name the column you want to predict - without it the classical stage cannot be evaluated.'}
                 </span>
               </div>
             </CardBody>
@@ -234,6 +277,28 @@ export default function UploadDataset() {
             </CardBody>
           </Card>
 
+          {status === 'analyzing' && (
+            <Card accent="accent" className="mt-4">
+              <CardHeader title="Running the analysis pipeline" />
+              <CardBody>
+                <ol className="small stage-progress">
+                  {ANALYSIS_STAGES.map((label, index) => (
+                    <li key={label} className={index === 0 ? 'is-current' : 'is-pending'}>
+                      <span className="stage-progress__mark" aria-hidden="true">
+                        {index === 0 ? '›' : '·'}
+                      </span>
+                      {label}
+                    </li>
+                  ))}
+                </ol>
+                <p className="small muted mt-2">
+                  The backend runs every stage in one pass. This page will open automatically once
+                  it finishes.
+                </p>
+              </CardBody>
+            </Card>
+          )}
+
           <Card>
             <CardHeader title="What happens next" />
             <CardBody>
@@ -244,8 +309,9 @@ export default function UploadDataset() {
                 <li>A weighted comparison yields the recommended approach.</li>
                 <li>The report consolidates everything into a downloadable document.</li>
               </ol>
-              <Alert tone="warning" className="mt-4">
-                Steps 3–5 currently return mocked values.
+              <Alert tone="info" className="mt-4">
+                Steps 1–2 are measured from your file. Steps 3–5 are computed by the analysis
+                engine; the quantum stage is a suitability analysis, not an executed circuit.
               </Alert>
             </CardBody>
           </Card>

@@ -3,22 +3,35 @@
 import { Link } from 'react-router-dom'
 import RequireAnalysis from '../components/RequireAnalysis'
 import PipelineStepper from '../components/PipelineStepper'
-import { Alert, Badge, Button, Card, CardBody, CardHeader, MockBadge, ProgressBar } from '../components/ui'
+import { Alert, Badge, Button, Card, CardBody, CardHeader, ProgressBar, SourceBadge } from '../components/ui'
 import { useAnalysisContext } from '../context/AnalysisContext'
 
 export default function Recommendation() {
   const { recommendation, pipeline } = useAnalysisContext()
-  if (!recommendation) return null
-
-  const tone = recommendation.approach_key
 
   return (
     <RequireAnalysis
       title="Recommendation"
       subtitle="Pipeline stage 6 of 7 — the recommended approach, the reasoning behind it, and what to do next."
+      stage={recommendation}
+      stageLabel="Recommendation"
     >
+      {recommendation ? <RecommendationStage recommendation={recommendation} pipeline={pipeline} /> : null}
+    </RequireAnalysis>
+  )
+}
+
+/** Stage body — see the note in ClassicalAnalysis.jsx about the split. */
+function RecommendationStage({ recommendation, pipeline }) {
+  const tone = recommendation.approach_key
+
+  return (
+    <>
       <Card accent="accent">
-        <CardHeader title="Analysis pipeline" actions={<MockBadge label="Mock decision engine" />} />
+        <CardHeader
+          title="Analysis pipeline"
+          actions={<SourceBadge block={recommendation} label="Decision rules" />}
+        />
         <CardBody>
           <PipelineStepper pipeline={pipeline} current={5} />
         </CardBody>
@@ -29,7 +42,7 @@ export default function Recommendation() {
           <div>
             <span className="badge rec-hero__badge">
               <span className="dot" />
-              Placeholder recommendation
+              Decision gate {recommendation.gate}
             </span>
             <h2 className="mt-2">{recommendation.headline}</h2>
             <p style={{ maxWidth: '62ch' }}>{recommendation.summary}</p>
@@ -141,6 +154,53 @@ export default function Recommendation() {
           </Card>
 
           <Card>
+            <CardHeader
+              title="Decision gates"
+              subtitle="The rules are evaluated in order; the first match decides the verdict."
+            />
+            <CardBody>
+              <div className="stack stack--sm">
+                {(recommendation.gates_evaluated || []).map((gate) => (
+                  <div className="stat" key={gate.gate}>
+                    <div className="row row--between">
+                      <strong>
+                        {gate.gate} · {gate.name}
+                      </strong>
+                      <Badge tone={gate.passed ? 'success' : 'neutral'}>
+                        {gate.passed ? 'Matched' : 'Not matched'}
+                      </Badge>
+                    </div>
+                    {typeof gate.evidence === 'object' ? (
+                      <ul className="small muted">
+                        {Object.entries(gate.evidence).map(([rule, ok]) => (
+                          <li key={rule}>
+                            {ok ? '✓' : '✗'} {rule}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="small muted">{gate.evidence}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </CardBody>
+          </Card>
+
+          <Card>
+            <CardHeader title="Alternatives considered" subtitle="Why each other option was not chosen." />
+            <CardBody>
+              <ul className="small stack stack--sm">
+                {(recommendation.alternatives_considered || []).map((alt) => (
+                  <li key={alt.approach}>
+                    <strong>{alt.approach}</strong> ({alt.score}/100) — {alt.why_not}
+                  </li>
+                ))}
+              </ul>
+            </CardBody>
+          </Card>
+
+          <Card>
             <CardHeader title="Decision basis" />
             <CardBody>
               <p className="small">{recommendation.decision_basis}</p>
@@ -148,7 +208,7 @@ export default function Recommendation() {
             </CardBody>
           </Card>
 
-          <Alert tone="warning" title="This is not a real recommendation">
+          <Alert tone="info" title="What this recommendation is based on">
             {recommendation.disclaimer}
           </Alert>
 
@@ -166,7 +226,7 @@ export default function Recommendation() {
           </div>
         </div>
       </div>
-    </RequireAnalysis>
+    </>
   )
 }
 

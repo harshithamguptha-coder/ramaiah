@@ -3,7 +3,7 @@
 import { Link } from 'react-router-dom'
 import RequireAnalysis from '../components/RequireAnalysis'
 import PipelineStepper from '../components/PipelineStepper'
-import { Alert, Badge, Button, Card, CardBody, CardHeader, MockBadge } from '../components/ui'
+import { Alert, Badge, Button, Card, CardBody, CardHeader, SourceBadge } from '../components/ui'
 import { useAnalysisContext } from '../context/AnalysisContext'
 import api from '../services/api'
 import { formatDateTime } from '../utils/format'
@@ -59,15 +59,25 @@ function ReportBlock({ block }) {
 
 export default function DetailedReport() {
   const { report, pipeline, analysisId, reset } = useAnalysisContext()
-  if (!report) return null
 
   return (
     <RequireAnalysis
       title="Detailed Report"
       subtitle="Pipeline stage 7 of 7 — the consolidated analysis, ready to download."
+      stage={report}
+      stageLabel="Detailed report"
     >
+      {report ? <ReportStage report={report} pipeline={pipeline} analysisId={analysisId} reset={reset} /> : null}
+    </RequireAnalysis>
+  )
+}
+
+/** Stage body — see the note in ClassicalAnalysis.jsx about the split. */
+function ReportStage({ report, pipeline, analysisId, reset }) {
+  return (
+    <>
       <Card accent="accent">
-        <CardHeader title="Analysis pipeline" actions={<MockBadge />} />
+        <CardHeader title="Analysis pipeline" actions={<SourceBadge block={report} label="Generated" />} />
         <CardBody>
           <PipelineStepper pipeline={pipeline} current={6} />
         </CardBody>
@@ -96,9 +106,10 @@ export default function DetailedReport() {
         </div>
       </div>
 
-      <Alert tone="warning" title="Report generated from placeholder data">
-        Sections other than the dataset summary and problem overview contain mocked values. The
-        download is a working Markdown export of exactly what is shown here.
+      <Alert tone="info" title="What this report contains">
+        Dataset statistics and the classical baseline are measured on your data. The quantum
+        section is a suitability analysis with its full factor breakdown — no circuit was
+        executed. The download is a Markdown export of exactly what is shown here.
       </Alert>
 
       <div className="grid grid--sidebar">
@@ -149,7 +160,7 @@ export default function DetailedReport() {
                 <dt>Format</dt>
                 <dd>Markdown (.md)</dd>
                 <dt>Data source</dt>
-                <dd>Mock</dd>
+                <dd>Real analysis</dd>
               </dl>
             </CardBody>
           </Card>
@@ -164,6 +175,7 @@ export default function DetailedReport() {
           </div>
         </div>
       </div>
-    </RequireAnalysis>
+    </>
   )
 }
+

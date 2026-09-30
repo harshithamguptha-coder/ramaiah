@@ -1,12 +1,15 @@
 # Q-Compass — Quantum Readiness & AI Decision Engine
 
-> **Prototype status.** This repository is the **base application**: a complete,
-> working end-to-end flow (Dashboard → Upload → Analysis → Comparison →
-> Recommendation → Report) built on **mock analysis data**. Only dataset
-> ingestion and structural profiling are real. The architecture is designed so
-> the real classical-ML, quantum, comparison and recommendation engines can be
-> implemented independently and plugged in later without changing the UI or the
-> API contract.
+> **What the analysis does.** Q-Compass profiles your dataset, characterises the
+> ML problem, **trains real classical baselines and reports what they actually
+> scored**, scores **quantum suitability** from transparent factors, and
+> recommends Classical, Hybrid or Quantum AI via explicit decision rules.
+>
+> **What it does not do.** It never claims a quantum advantage. No quantum
+> circuit is built or executed, no quantum performance is fabricated, and
+> **Classical AI is the default** — Quantum AI has to earn its way out.
+>
+> Full engine documentation: **[`backend/services/README.md`](backend/services/README.md)**.
 
 Q-Compass analyses an AI/ML problem and helps decide whether it is better suited
 to **Classical AI**, **Quantum AI**, or a **Hybrid** approach.
@@ -23,7 +26,7 @@ to **Classical AI**, **Quantum AI**, or a **Hybrid** approach.
 - [Backend setup](#backend-setup)
 - [How to run](#how-to-run)
 - [API endpoints](#api-endpoints)
-- [What is real vs. mocked](#what-is-real-vs-mocked)
+- [What is real vs. modelled](#what-is-real-vs-modelled)
 - [Current limitations](#current-limitations)
 - [Future implementation plan](#future-implementation-plan)
 
@@ -53,21 +56,25 @@ Recommendation
 Detailed Report
 ```
 
-Every page and every transition works today. The pages after *Problem Analysis*
-display deterministic placeholder values, all clearly marked with a
-`Mock data` badge so nobody mistakes a fabricated number for a measurement.
+Every page and every transition works today, and every value on them comes from
+the analysis engine: measured classical scores, a transparent quantum suitability
+score with its full factor breakdown, and a recommendation that names the
+decision gate which fired.
 
 ### Pipeline stages
 
 | # | Stage | Route | Status |
 |---|-------|-------|--------|
-| 1 | Dataset uploaded | `/upload` | **Real** (ingest + structural profile) |
-| 2 | Dataset profiling | `/analysis` | **Real** (shape) / mock (task inference) |
-| 3 | Classical analysis | `/classical` | Mock |
-| 4 | Quantum analysis | `/quantum` | Mock |
-| 5 | Comparison | `/comparison` | Mock |
-| 6 | Recommendation | `/recommendation` | Mock |
+| 1 | Dataset uploaded | `/upload` | **Real** (parse + profile) |
+| 2 | Dataset & problem analysis | `/analysis` | **Real** (structure + task characterisation) |
+| 3 | Classical analysis | `/classical` | **Real** (models trained, metrics measured) |
+| 4 | Quantum analysis | `/quantum` | **Real scoring** (theoretical, not executed) |
+| 5 | Comparison | `/comparison` | **Real** (derived from measured inputs) |
+| 6 | Recommendation | `/recommendation` | **Real** (decision rules) |
 | 7 | Report generation | `/report` | **Real** (Markdown export) |
+
+The payload contract is unchanged, so no frontend rework was needed to swap the
+mock engine for the real one.
 
 ---
 
@@ -105,37 +112,40 @@ upload → profiling → classical → quantum → comparison → recommendation
    browser ─► routes/ ─► orchestrator ─► dataset | classical | quantum |
                                             comparison | recommendation | report
                                                     │
-                                          models/mock/*  (swap point)
+                                          services/*  (the engine)
                                                     │
                                             utils/store.py  (DB seam)
 ```
 
-### Where to plug in the real engines
+### Where the engines live
 
-| Concern | File to replace | What you add |
+| Concern | File | What it does |
 |---|---|---|
-| Dataset parsing / profiling | `utils/profiling.py` | pandas / Polars reader |
-| Problem classification | `models/mock/dataset.py` | A real classifier or LLM classifier |
-| Classical benchmarking | `services/classical_service.py` | scikit-learn / XGBoost training + CV |
-| Feature selection | *(new stage between profiling and classical)* | Filter / wrapper / embedded selection |
-| Quantum suitability | `services/quantum_service.py` | Penalty-based scoring model |
-| Quantum experiment | `services/quantum_service.py` | Qiskit / PennyLane circuit + simulator |
-| Comparison scoring | `services/comparison_service.py` | Real weighting / learned ranker |
-| Recommendation | `services/recommendation_service.py` | Rules engine or LLM-assisted explanation |
-| Persistence | `utils/store.py` | Implement `AnalysisRepository` with SQL/Postgres/Mongo |
+| Dataset parsing / profiling | `utils/profiling.py` | pandas reader + full structural profile |
+| Ingest + dataset block | `services/dataset_service.py` | validate, store, parse once, cache the frame |
+| Problem classification | `services/problem_service.py` | task type + measured characteristics |
+| Classical benchmarking | `services/classical_service.py` | trains scikit-learn models, reports measured metrics |
+| Quantum suitability | `services/quantum_service.py` | 6-factor transparent scoring + hard caps |
+| Quantum *experiment* | *(future)* | Qiskit / PennyLane circuit + simulator — see [plugging in](#backend-servicessreadmemd) |
+| Comparison scoring | `services/comparison_service.py` | weighted matrix with per-cell `basis` tags |
+| Recommendation | `services/recommendation_service.py` | ordered decision gates (G2–G5) |
+| Report | `services/report_service.py` | structured sections + Markdown |
+| Persistence | `utils/store.py` | implement `AnalysisRepository` for a real database |
 
-The payload contract is fixed, so the frontend needs **no changes** when a real
-engine lands:
+The payload contract is fixed, so the frontend needed **no structural changes**
+when the mock engine was replaced:
 
 ```jsonc
 {
   "analysis_id": "an_77d9226d4ad5",
   "status": "completed",
-  "data_source": "mock",          // flip to "real" when engines are live
+  "data_source": "real",
+  "mock_data": false,
+  "warnings": [ ],
   "dataset":             { },     // stage 2
   "problem":             { },     // stage 2
-  "classical_analysis":  { },     // stage 3
-  "quantum_analysis":    { },     // stage 4
+  "classical_analysis":  { },     // stage 3  (measured)
+  "quantum_analysis":    { },     // stage 4  (scored, not executed)
   "comparison":          { },     // stage 5
   "recommendation":      { },     // stage 6
   "report":              { }      // stage 7
@@ -161,26 +171,29 @@ ramaiah/
 │   │   ├── health.py                 # /api/health, /api/meta
 │   │   ├── upload.py                 # /api/upload
 │   │   └── analysis.py               # /api/analyze, /api/analysis/*
-│   ├── services/
+│   ├── services/                     # THE ANALYSIS ENGINE
+│   │   ├── README.md                 # <- full engine documentation
 │   │   ├── analysis_service.py       # orchestrator (owns stage order)
-│   │   ├── dataset_service.py        # ingest + profile
-│   │   ├── classical_service.py      # stage 3  <-- replace me
-│   │   ├── quantum_service.py        # stage 4  <-- replace me
-│   │   ├── comparison_service.py     # stage 5  <-- replace me
-│   │   ├── recommendation_service.py # stage 6  <-- replace me
-│   │   └── report_service.py         # stage 7
+│   │   ├── dataset_service.py        # stage 1  ingest + profile
+│   │   ├── problem_service.py        # stage 2  problem characterisation
+│   │   ├── classical_service.py      # stage 3  trains + measures models
+│   │   ├── quantum_service.py        # stage 4  suitability scoring
+│   │   ├── comparison_service.py     # stage 5  weighted matrix
+│   │   ├── recommendation_service.py # stage 6  decision gates
+│   │   └── report_service.py         # stage 7  sections + Markdown
 │   ├── models/
 │   │   ├── schemas.py                # Pydantic request/response contracts
-│   │   └── mock/                     # ALL mock data lives here
-│   │       ├── common.py  dataset.py  classical.py  quantum.py
-│   │       ├── comparison.py  recommendation.py  report.py  pipeline.py
+│   │   └── mock/pipeline.py          # static stage defs for the UI stepper
 │   └── utils/
 │       ├── store.py                  # database seam (AnalysisRepository)
-│       ├── profiling.py              # structural CSV/JSON profiler
+│       ├── profiling.py              # pandas reader + structural profiler
+│       ├── dataset_cache.py          # parse each upload exactly once
+│       ├── errors.py                 # typed errors -> HTTP status codes
 │       ├── file_utils.py             # upload validation, path-traversal guard
 │       ├── ids.py  formatting.py  logging_config.py
 │   ├── uploads/                      # .gitkeep only
-│   └── tests/
+│   ├── tests/                        # 54 tests (pytest)
+│   └── pytest.ini
 └── frontend/
     ├── package.json  vite.config.js  eslint.config.js  index.html
     ├── .env.example
@@ -265,6 +278,12 @@ The API is then on <http://127.0.0.1:8000>, with interactive docs at
 | `MAX_UPLOAD_BYTES` | `26214400` (25 MB) | Upload size limit |
 | `STORE_MAX_ITEMS` | `50` | Analyses kept in the in-memory store |
 | `ENVIRONMENT` | `development` | Free-form environment label |
+| `ANALYSIS_MAX_ROWS` | `20000` | Rows read from disk; larger files are sampled |
+| `ANALYSIS_RANDOM_SEED` | `42` | Every sampler and estimator, so runs reproduce |
+| `QUANTUM_REFERENCE_QUBITS` | `127` | Hardware-feasibility denominator |
+
+See [`backend/services/README.md`](backend/services/README.md#configuration) for
+the full list of engine budgets.
 
 ---
 
@@ -298,8 +317,13 @@ Then open **<http://localhost:5173>**.
    **Upload Dataset**, then **Start Analysis**.
 3. **Problem Analysis** — real row/column counts, feature types, missing values
    and the auto-detected `is_churned` target column.
-4. **Classical / Quantum / Comparison / Recommendation / Report** — populated
-   with labelled placeholder data.
+4. **Classical Analysis** — Logistic Regression, Random Forest and an RBF SVM are
+   trained on an 80% split and scored on a held-out 20%, alongside a
+   majority-class baseline.
+5. **Quantum Analysis** — the suitability score, the full factor breakdown behind
+   it, the qubit estimate, and candidate methods with their blocking issues.
+6. **Comparison / Recommendation / Report** — the weighted matrix, the decision
+   gate that fired and why, and a downloadable Markdown report.
 
 Production build:
 
@@ -341,82 +365,97 @@ curl -X POST http://127.0.0.1:8000/api/analyze \
 
 ---
 
-## What is real vs. mocked
+## What is real vs. modelled
 
 | Thing | Status |
 |---|---|
 | File upload, type/size validation, path-traversal guard | **Real** |
-| Row / column counts, numerical vs categorical split, missing values, target-column heuristic | **Real** (CSV + JSON) |
+| CSV / XLSX / JSON parsing | **Real** (pandas + openpyxl) |
+| Row / column counts, feature types, missing values, duplicates, cardinality, class distribution, target column | **Real** |
+| Task-type characterisation (classification / regression / clustering / optimisation / unknown) | **Real** (structural + keyword disambiguation) |
+| Classical model training and metrics | **Real** (scikit-learn, measured on a hold-out split) |
+| Quantum suitability score | **Real scoring** (6 transparent weighted factors + hard caps) |
+| Comparison matrix, winner, radar data | **Real** (derived from measured inputs) |
+| Recommendation, confidence, reasoning, next steps | **Real** (ordered decision gates) |
 | Pipeline orchestration and persistence | **Real** |
 | Markdown report download | **Real** |
-| Task-type inference | Keyword heuristic (placeholder) |
-| Classical accuracies, training times, complexity | **Mock** |
-| Quantum suitability, qubit counts, circuit depth, feasibility | **Mock** |
-| Comparison scores, winner, radar data | **Mock** |
-| Recommendation, confidence, reasoning, next steps | **Mock** |
-| XLSX cell-level parsing | Not implemented (no spreadsheet dependency) |
+| Quantum circuit execution / hardware results | **Not implemented, and not claimed** |
 
-Mock values are **deterministic**: they are seeded from the analysis id, so the
-same upload always produces the same report and demos are reproducible.
-
-Every mock block carries `is_mock: true` and a `note`, and the UI renders a
-`Mock data` badge. The recommendation carries an explicit disclaimer.
-
-> **Note on the verdict.** With the current placeholder scores the pipeline
-> usually concludes **Classical AI** (92 vs 79 hybrid vs 36 quantum). That is
-> the mock weighting doing its job, not a hard-coded answer — swap in real
+Mock values are gone: `models/mock/` now contains only the static pipeline-stage
+definitions the UI stepper needs. Every block reports `is_mock: false`, and
+`data_source` is `"real"`.
 
 ---
 
 ## Current limitations
 
-- **No real intelligence.** Classical, quantum, comparison and recommendation are
-  placeholders. Numbers are illustrative, not measurements.
-- **In-memory storage.** Analyses live in process memory — they are lost on
-  restart and are not shared between workers. `utils/store.py` is the seam for a
-  real database.
-- **XLSX is accepted but not parsed.** Uploading works; cell-level profiling is
-  skipped to avoid a spreadsheet dependency. Add `openpyxl` to enable it.
-- **Full-file scanning.** The profiler samples the first 500 rows of a CSV for
-  type inference, but counts every row for the row total. Very large files are
-  not streamed.
-- **No authentication, no rate limiting, no upload retention policy.** Fine for
-  a prototype on a trusted network; all three are needed before any public
-  deployment.
-- **No tests yet.** `backend/tests/` is scaffolded but empty.
+Read these before trusting a number. The full list is in
+[`backend/services/README.md`](backend/services/README.md#limitations); the most
+important ones:
+
+- **No quantum result exists.** The quantum stage is a *theoretical suitability
+  analysis*. No circuit is built or executed, and no quantum performance is
+  claimed anywhere in the payload.
+- **The suitability score is a prioritisation heuristic, not a physical model.**
+  Its weights are defensible and fully disclosed in `quantum_analysis.scoring`,
+  but they are a judgement call, and the hard caps are policy rather than
+  physics.
+- **The classical baselines are baselines, not best results.** Models are cheap
+  and untuned on purpose. A tuned ensemble will beat them.
+- **Large files are sampled** above `ANALYSIS_MAX_ROWS`, and the payload says so
+  in `dataset.warnings`.
+- **In-memory storage.** Analyses are lost on restart and are not shared between
+  workers. `utils/store.py` is the seam for a real database.
+- **No authentication, no rate limiting, no upload retention policy.** Needed
+  before any public deployment.
 - **Report is Markdown only.** No PDF/HTML export.
-- **Upload guard is client + server side but shallow** — content sniffing is not
-  performed, so a mislabelled file will be accepted and profile as whatever it
-  parses as.
+- **Upload guard is client + server side but shallow** — no content sniffing, so
+  a mislabelled file is parsed as whatever it actually is.
 
 ---
 
-## Future implementation plan
+## Testing
 
-**Phase 1 — Real data foundation**
-- Pandas/Polars-backed loader; parse XLSX via `openpyxl`.
-- Full profiling: distributions, correlations, class balance, cardinality.
-- Persistent `AnalysisRepository` (Postgres via SQLAlchemy, or Mongo).
-- Authentication, rate limiting, per-upload size/retention limits.
+```bash
+cd backend
+pytest              # 54 tests
+```
 
-**Phase 2 — Classical ML**
-- Problem classifier (rule-based + LLM-assisted) replacing the keyword heuristic.
-- **Feature selection stage** inserted between profiling and classical: filter,
-  wrapper and embedded methods, with the chosen subset reported.
-- scikit-learn / XGBoost benchmarks with cross-validation, precision/recall/F1,
-  confusion matrices and learning curves.
-- Measured baselines replace every mocked accuracy and timing.
+| File | Covers |
+|---|---|
+| `tests/test_scenarios.py` | The three required datasets — outcome **and** reasoning |
+| `tests/test_errors.py` | Every error path (bad type, empty, unparseable, too few rows, single class, long description, ...) |
+| `tests/test_api_contract.py` | Every key the React pages read still exists and is usable |
+| `tests/test_scoring.py` | The scoring formula, reproducibility, monotonicity, caps and bounds |
 
-**Phase 3 — Quantum analysis**
-- Penalty-based quantum suitability model (feature count, depth, noise, data
-  size, problem type).
-- Qiskit / PennyLane circuit construction on the reduced feature set.
-- Simulator execution first; hardware only behind an explicit flag.
-- Shot counts, noise models, and honest error bars.
+The three required scenarios:
 
-**Phase 4 — Comparison & recommendation**
-- Configurable, transparent weighting across the eight criteria.
-- Learned ranker or rules engine for the final verdict.
+1. **Small classification** → a model is trained, beats the majority-class
+   floor, classical is reported `High` feasibility, and classical is recommended.
+2. **High-dimensional feature selection** → *Quantum Feature Selection* becomes
+   the top candidate, while the accuracy row still refuses to claim a quantum
+   number.
+3. **Optimisation framing** → the task type comes from the statement (there is no
+   target column at all), *QAOA* is the top candidate, and no predictive model is
+   invented.
+
+---
+
+## Future work
+
+**Next — feature selection.** Insert a stage between profiling and classical
+(filter / wrapper / embedded) so the chosen subset is reported and fed to both
+engines. This is the single change that would most improve real quantum
+feasibility, because a smaller `d` is what actually shrinks the qubit register.
+
+**Then — a real quantum experiment.** Build the circuit, run it on a simulator,
+and report the measurement. See
+[plugging in real quantum algorithms](backend/services/README.md#plugging-in-real-quantum-algorithms).
+The key rule: a *measured* quantum result that beats the classical control is
+the only thing that should ever move a verdict toward Quantum AI.
+
+**Platform.** Persistent `AnalysisRepository` (Postgres/Mongo), authentication,
+rate limiting, per-upload retention limits, and PDF/HTML report export.
 - LLM-assisted natural-language reasoning and next steps, grounded in the
   measured results.
 
@@ -436,9 +475,13 @@ Every mock block carries `is_mock: true` and a `note`, and the UI renders a
 1. Fork and branch off `main`.
 2. Keep the decoupling rule: stages do not import each other; new behaviour goes
    behind a service module, not into a route or a React component.
-3. Never hard-code an analysis value in the UI — add it to `models/mock/` or
-   read it from the API payload.
-4. Run `npm run lint` and `npm run build` in `frontend/` before opening a PR.
+3. **Never hard-code an analysis value.** Either compute it in the service that
+   owns it, or read it from the API payload.
+4. **Never fabricate a measurement.** If a number was not measured, label it as
+   a derived value or an assumption — `comparison.criteria[*][*].basis` exists for
+   exactly this. Quantum performance in particular must never be invented.
+5. Run `pytest` in `backend/`, and `npm run lint` + `npm run build` in
+   `frontend/`, before opening a PR.
 
 ## License
 

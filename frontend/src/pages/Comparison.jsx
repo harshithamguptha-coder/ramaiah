@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import RequireAnalysis from '../components/RequireAnalysis'
 import PipelineStepper from '../components/PipelineStepper'
-import { Alert, Badge, Button, Card, CardBody, CardFooter, CardHeader, MockBadge } from '../components/ui'
+import { Alert, Badge, Button, Card, CardBody, CardFooter, CardHeader, SourceBadge } from '../components/ui'
 import { GroupedBars, RadarChart, TONE_VAR } from '../components/charts'
 import { useAnalysisContext } from '../context/AnalysisContext'
 
@@ -20,8 +20,20 @@ export default function Comparison() {
   const { comparison, pipeline } = useAnalysisContext()
   const [view, setView] = useState('table')
 
-  if (!comparison) return null
+  return (
+    <RequireAnalysis
+      title="Classical vs Quantum Comparison"
+      subtitle="Pipeline stage 5 of 7 — a weighted comparison of Classical AI, Quantum AI and Hybrid AI."
+      stage={comparison}
+      stageLabel="Comparison"
+    >
+      {comparison ? <ComparisonStage comparison={comparison} pipeline={pipeline} view={view} setView={setView} /> : null}
+    </RequireAnalysis>
+  )
+}
 
+/** Stage body — see the note in ClassicalAnalysis.jsx about the split. */
+function ComparisonStage({ comparison, pipeline, view, setView }) {
   const {
     criteria,
     weighted_scores: scores,
@@ -31,10 +43,7 @@ export default function Comparison() {
   } = comparison
 
   return (
-    <RequireAnalysis
-      title="Classical vs Quantum Comparison"
-      subtitle="Pipeline stage 5 of 7 — a weighted comparison of Classical AI, Quantum AI and Hybrid AI."
-    >
+    <>
       <Card accent="accent">
         <CardHeader
           title="Analysis pipeline"
@@ -77,8 +86,8 @@ export default function Comparison() {
         <Card>
           <CardHeader
             title="Weighted comparison matrix"
-            subtitle="Each criterion is scored 0–100 and multiplied by its weight. Higher is better."
-            actions={<MockBadge />}
+            subtitle="Each criterion is scored 0–100 and multiplied by its weight. Higher is better. Hover a cell to see whether it is measured, derived, or an assumption."
+            actions={<SourceBadge block={comparison} label="Weighted matrix" />}
           />
           <CardBody tight>
             <div className="table-wrap">
@@ -100,7 +109,11 @@ export default function Comparison() {
                         <td style={{ fontWeight: 650 }}>{row.criterion}</td>
                         <td className="num muted">{Math.round(row.weight * 100)}%</td>
                         {KEYS.map((key) => (
-                          <td key={key} className={`num${bestKey === key ? ' best' : ''}`} title={row[key].note}>
+                          <td
+                            key={key}
+                            className={`num${bestKey === key ? ' best' : ''}`}
+                            title={`${row[key].note}${row[key].basis ? ` (${row[key].basis})` : ''}`}
+                          >
                             <div style={{ fontWeight: 650 }}>{row[key].score}</div>
                             <div className="small muted">{row[key].value}</div>
                           </td>
@@ -150,6 +163,7 @@ export default function Comparison() {
           <Button variant="primary" iconRight="arrowRight">Continue to Recommendation</Button>
         </Link>
       </div>
-    </RequireAnalysis>
+    </>
   )
 }
+

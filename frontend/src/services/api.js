@@ -73,8 +73,6 @@ async function request(path, options = {}) {
   }
 }
 
-const json = (body) => ({ method: 'POST', body: JSON.stringify(body) })
-
 export const api = {
   /** Liveness probe used by the topbar indicator. */
   health: () => request('/api/health', { timeout: 5000 }),
@@ -84,19 +82,36 @@ export const api = {
 
   /**
    * Upload a dataset.
+   *
+   * `targetColumn` is optional but matters: the backend can only auto-detect a
+   * target from column *names* (target, label, class, is_*, ...). A column like
+   * `quality` matches none of those, so without this the run finds no label and
+   * the classical stage is skipped.
+   *
    * @param {File} file
    * @param {string} problemDescription
+   * @param {string} targetColumn
    */
-  uploadDataset: (file, problemDescription = '') => {
+  uploadDataset: (file, problemDescription = '', targetColumn = '') => {
     const form = new FormData()
     form.append('file', file)
     if (problemDescription) form.append('problem_description', problemDescription)
+    if (targetColumn) form.append('target_column', targetColumn)
     return request('/api/upload', { method: 'POST', body: form, timeout: 120000 })
   },
 
-  /** Run the analysis pipeline for an existing upload. */
-  startAnalysis: (analysisId, problemDescription) =>
-    request('/api/analyze', json({ analysis_id: analysisId, problem_description: problemDescription })),
+  /**
+   * Run the analysis pipeline for an existing upload.
+   *
+   * The response is the COMPLETE payload (dataset, problem, classical_analysis,
+   * quantum_analysis, comparison, recommendation, report) - it is stored whole.
+   */
+  startAnalysis: (analysisId, problemDescription, targetColumn) => {
+    const body = { analysis_id: analysisId }
+    if (problemDescription) body.problem_description = problemDescription
+    if (targetColumn) body.target_column = targetColumn
+    return request('/api/analyze', { method: 'POST', body: JSON.stringify(body) })
+  },
 
   /** Fetch the full analysis payload. */
   getAnalysis: (analysisId) => request(`/api/analysis/${analysisId}`),

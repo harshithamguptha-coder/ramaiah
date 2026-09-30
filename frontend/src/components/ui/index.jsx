@@ -76,11 +76,42 @@ export function Badge({ children, tone = 'neutral', ...rest }) {
   )
 }
 
-/** Explicit "this value is fabricated" marker used across the analysis pages. */
+/**
+ * Explicit "this value is fabricated" marker.
+ * Kept for any block that still carries is_mock; the live engine returns
+ * false everywhere, so SourceBadge is what actually renders.
+ */
 export function MockBadge({ label = 'Mock data' }) {
   return (
     <Badge tone="mock" title="Placeholder value — no real model or circuit has been run.">
       {label}
+    </Badge>
+  )
+}
+
+/**
+ * Where the numbers on this page came from.
+ *
+ * Reads the `is_mock` / `status` flags the backend sends and labels the block
+ * accordingly, so the badge can never drift out of sync with the data: if the
+ * engine ever reports a failure, this turns into a warning rather than claiming
+ * a clean measurement.
+ */
+export function SourceBadge({ block, label }) {
+  if (!block) return null
+  if (block.is_mock) return <MockBadge />
+
+  const status = block.status
+  if (status === 'failed') {
+    return <Badge tone="warning" title="This stage failed; see the notes below.">{label || 'Stage failed'}</Badge>
+  }
+  if (status === 'skipped') {
+    return <Badge tone="warning" title="No model was trained for this stage.">{label || 'Not evaluated'}</Badge>
+  }
+
+  return (
+    <Badge tone="success" title="Computed from your data by the analysis engine.">
+      {label || 'Measured'}
     </Badge>
   )
 }

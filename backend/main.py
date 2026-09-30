@@ -17,6 +17,7 @@ from fastapi.responses import JSONResponse
 
 from config import settings
 from routes import analysis, health, upload
+from utils.errors import AnalysisError
 from utils.file_utils import ensure_directory
 from utils.logging_config import configure_logging, get_logger
 
@@ -28,21 +29,24 @@ logger = get_logger(__name__)
 async def lifespan(app: FastAPI):  # noqa: ARG001 - FastAPI signature
     """Prepare and tear down application resources."""
     ensure_directory(settings.upload_dir)
-    logger.info("%s v%s starting in %s mode", settings.app_name, settings.app_version, settings.environment)
-    logger.info("Analysis engines are MOCK placeholders in this prototype.")
+    logger.info(
+        "%s v%s starting in %s mode", settings.app_name, settings.app_version, settings.environment
+    )
+    logger.info("Analysis engine: real profiling, real classical training, theoretical quantum scoring.")
     yield
     logger.info("%s shutting down", settings.app_name)
 
 
 DESCRIPTION = """
-**Q-Compass** — Quantum Readiness & AI Decision Engine.
+**Q-Compass** - Quantum Readiness & AI Decision Engine.
 
 Upload a dataset, describe the AI problem, and Q-Compass compares Classical AI,
 Quantum AI and Hybrid AI approaches for it.
 
-> **Prototype status:** the analysis pipeline currently returns deterministic
-> **mock data**. Only dataset ingestion and structural profiling are real.
-> The response contract is final, so the engines can be replaced independently.
+> **Scope of the analysis.** The classical stage trains real models and reports
+> measured scores. The quantum stage is a *theoretical suitability analysis*: it
+> scores how worth investigating quantum methods are, from transparent factors.
+> No circuit is executed and no quantum performance is claimed.
 """
 
 
@@ -75,10 +79,16 @@ def create_app() -> FastAPI:
         return {
             "service": settings.app_name,
             "version": settings.app_version,
-            "mode": "mock",
+            "mode": "real",
             "docs": "/docs",
             "health": "/api/health",
         }
+
+    @app.exception_handler(AnalysisError)
+    async def analysis_error_handler(request: Request, exc: AnalysisError) -> JSONResponse:
+        """Return the engine's typed errors as a consistent JSON body."""
+        logger.warning("Analysis error on %s %s: %s", request.method, request.url.path, exc.message)
+        return JSONResponse(status_code=exc.status_code, content=exc.to_payload())
 
     @app.exception_handler(Exception)
     async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:

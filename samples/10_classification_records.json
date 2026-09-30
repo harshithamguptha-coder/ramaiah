@@ -1,0 +1,1602 @@
+[
+ {
+  "tenure_months": 30,
+  "monthly_charge": 57.71,
+  "avg_session_minutes": 29.22,
+  "support_tickets": 5,
+  "age": 39,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 62,
+  "monthly_charge": 64.17,
+  "avg_session_minutes": 18.15,
+  "support_tickets": 0,
+  "age": 24,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 69,
+  "monthly_charge": 56.96,
+  "avg_session_minutes": 25.34,
+  "support_tickets": 3,
+  "age": 25,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 21,
+  "monthly_charge": 77.25,
+  "avg_session_minutes": 29.2,
+  "support_tickets": 3,
+  "age": 50,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 9,
+  "monthly_charge": 50.85,
+  "avg_session_minutes": 29.93,
+  "support_tickets": 5,
+  "age": 67,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 43,
+  "monthly_charge": 93.18,
+  "avg_session_minutes": 12.7,
+  "support_tickets": 2,
+  "age": 54,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 48,
+  "monthly_charge": 69.63,
+  "avg_session_minutes": 31.73,
+  "support_tickets": 4,
+  "age": 52,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 56,
+  "monthly_charge": 63.14,
+  "avg_session_minutes": 26.09,
+  "support_tickets": 5,
+  "age": 71,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 46,
+  "monthly_charge": 49.74,
+  "avg_session_minutes": 26.41,
+  "support_tickets": 3,
+  "age": 40,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 51,
+  "monthly_charge": 65.05,
+  "avg_session_minutes": 11.0,
+  "support_tickets": 0,
+  "age": 31,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 65,
+  "monthly_charge": 59.94,
+  "avg_session_minutes": 25.48,
+  "support_tickets": 4,
+  "age": 58,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 65,
+  "monthly_charge": 94.2,
+  "avg_session_minutes": 12.52,
+  "support_tickets": 0,
+  "age": 54,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 66,
+  "monthly_charge": 76.85,
+  "avg_session_minutes": 4.97,
+  "support_tickets": 5,
+  "age": 53,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 62,
+  "monthly_charge": 31.92,
+  "avg_session_minutes": 25.93,
+  "support_tickets": 5,
+  "age": 30,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 52,
+  "monthly_charge": 87.52,
+  "avg_session_minutes": 25.14,
+  "support_tickets": 1,
+  "age": 24,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 66,
+  "monthly_charge": 17.28,
+  "avg_session_minutes": 25.65,
+  "support_tickets": 4,
+  "age": 37,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 1,
+  "monthly_charge": 87.74,
+  "avg_session_minutes": 26.61,
+  "support_tickets": 4,
+  "age": 44,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 2,
+  "monthly_charge": 26.05,
+  "avg_session_minutes": 25.21,
+  "support_tickets": 4,
+  "age": 66,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 57,
+  "monthly_charge": 60.01,
+  "avg_session_minutes": 34.02,
+  "support_tickets": 1,
+  "age": 65,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 32,
+  "monthly_charge": 74.62,
+  "avg_session_minutes": 31.72,
+  "support_tickets": 3,
+  "age": 32,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 54,
+  "monthly_charge": 59.86,
+  "avg_session_minutes": 38.26,
+  "support_tickets": 4,
+  "age": 72,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 35,
+  "monthly_charge": 40.23,
+  "avg_session_minutes": 45.48,
+  "support_tickets": 3,
+  "age": 62,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 65,
+  "monthly_charge": 82.2,
+  "avg_session_minutes": 31.47,
+  "support_tickets": 0,
+  "age": 74,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 5,
+  "monthly_charge": 27.97,
+  "avg_session_minutes": 31.71,
+  "support_tickets": 1,
+  "age": 67,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 48,
+  "monthly_charge": 33.72,
+  "avg_session_minutes": 40.52,
+  "support_tickets": 1,
+  "age": 34,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 1,
+  "monthly_charge": 84.91,
+  "avg_session_minutes": 18.36,
+  "support_tickets": 4,
+  "age": 45,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 11,
+  "monthly_charge": 44.43,
+  "avg_session_minutes": 22.75,
+  "support_tickets": 3,
+  "age": 74,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 59,
+  "monthly_charge": 64.44,
+  "avg_session_minutes": 27.4,
+  "support_tickets": 0,
+  "age": 40,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 21,
+  "monthly_charge": 74.58,
+  "avg_session_minutes": 12.9,
+  "support_tickets": 0,
+  "age": 64,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 70,
+  "monthly_charge": 58.08,
+  "avg_session_minutes": 33.09,
+  "support_tickets": 1,
+  "age": 68,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 25,
+  "monthly_charge": 64.98,
+  "avg_session_minutes": 38.0,
+  "support_tickets": 3,
+  "age": 40,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 56,
+  "monthly_charge": 62.17,
+  "avg_session_minutes": 15.29,
+  "support_tickets": 2,
+  "age": 40,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 69,
+  "monthly_charge": 63.85,
+  "avg_session_minutes": 18.84,
+  "support_tickets": 5,
+  "age": 43,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 23,
+  "monthly_charge": 81.37,
+  "avg_session_minutes": 32.55,
+  "support_tickets": 2,
+  "age": 73,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 70,
+  "monthly_charge": 76.82,
+  "avg_session_minutes": 36.14,
+  "support_tickets": 5,
+  "age": 57,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 51,
+  "monthly_charge": 65.82,
+  "avg_session_minutes": 12.04,
+  "support_tickets": 0,
+  "age": 30,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 69,
+  "monthly_charge": 76.51,
+  "avg_session_minutes": 29.61,
+  "support_tickets": 1,
+  "age": 30,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 22,
+  "monthly_charge": 50.25,
+  "avg_session_minutes": 23.58,
+  "support_tickets": 0,
+  "age": 47,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 37,
+  "monthly_charge": 46.24,
+  "avg_session_minutes": 10.41,
+  "support_tickets": 5,
+  "age": 29,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 53,
+  "monthly_charge": 41.97,
+  "avg_session_minutes": 21.78,
+  "support_tickets": 3,
+  "age": 47,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 69,
+  "monthly_charge": 74.11,
+  "avg_session_minutes": 20.58,
+  "support_tickets": 3,
+  "age": 57,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 20,
+  "monthly_charge": 89.25,
+  "avg_session_minutes": 25.96,
+  "support_tickets": 4,
+  "age": 37,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 35,
+  "monthly_charge": 61.53,
+  "avg_session_minutes": 25.39,
+  "support_tickets": 3,
+  "age": 64,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 56,
+  "monthly_charge": 24.38,
+  "avg_session_minutes": 22.88,
+  "support_tickets": 3,
+  "age": 28,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 60,
+  "monthly_charge": 50.84,
+  "avg_session_minutes": 23.99,
+  "support_tickets": 0,
+  "age": 54,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 71,
+  "monthly_charge": 68.42,
+  "avg_session_minutes": 23.8,
+  "support_tickets": 2,
+  "age": 36,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 16,
+  "monthly_charge": 65.35,
+  "avg_session_minutes": 29.15,
+  "support_tickets": 5,
+  "age": 55,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 71,
+  "monthly_charge": 61.69,
+  "avg_session_minutes": 32.77,
+  "support_tickets": 1,
+  "age": 30,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 9,
+  "monthly_charge": 77.8,
+  "avg_session_minutes": 32.72,
+  "support_tickets": 0,
+  "age": 40,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 63,
+  "monthly_charge": 76.68,
+  "avg_session_minutes": 17.89,
+  "support_tickets": 2,
+  "age": 34,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 62,
+  "monthly_charge": 35.87,
+  "avg_session_minutes": 18.68,
+  "support_tickets": 2,
+  "age": 58,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 65,
+  "monthly_charge": 67.82,
+  "avg_session_minutes": 19.64,
+  "support_tickets": 4,
+  "age": 20,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 63,
+  "monthly_charge": 46.69,
+  "avg_session_minutes": 36.38,
+  "support_tickets": 0,
+  "age": 34,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 51,
+  "monthly_charge": 64.19,
+  "avg_session_minutes": 28.83,
+  "support_tickets": 5,
+  "age": 52,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 42,
+  "monthly_charge": 82.39,
+  "avg_session_minutes": 18.86,
+  "support_tickets": 4,
+  "age": 42,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 40,
+  "monthly_charge": 92.96,
+  "avg_session_minutes": 15.74,
+  "support_tickets": 2,
+  "age": 37,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 6,
+  "monthly_charge": 72.6,
+  "avg_session_minutes": 16.94,
+  "support_tickets": 3,
+  "age": 53,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 66,
+  "monthly_charge": 50.9,
+  "avg_session_minutes": 25.23,
+  "support_tickets": 4,
+  "age": 71,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 66,
+  "monthly_charge": 53.68,
+  "avg_session_minutes": 16.17,
+  "support_tickets": 3,
+  "age": 64,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 7,
+  "monthly_charge": 69.6,
+  "avg_session_minutes": 24.94,
+  "support_tickets": 0,
+  "age": 33,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 43,
+  "monthly_charge": 42.22,
+  "avg_session_minutes": 35.78,
+  "support_tickets": 1,
+  "age": 70,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 27,
+  "monthly_charge": 58.78,
+  "avg_session_minutes": 22.95,
+  "support_tickets": 1,
+  "age": 32,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 53,
+  "monthly_charge": 70.89,
+  "avg_session_minutes": 31.84,
+  "support_tickets": 4,
+  "age": 32,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 44,
+  "monthly_charge": 76.53,
+  "avg_session_minutes": 12.83,
+  "support_tickets": 2,
+  "age": 44,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 42,
+  "monthly_charge": 54.65,
+  "avg_session_minutes": 27.85,
+  "support_tickets": 4,
+  "age": 45,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 34,
+  "monthly_charge": 66.66,
+  "avg_session_minutes": 27.33,
+  "support_tickets": 4,
+  "age": 18,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 8,
+  "monthly_charge": 84.53,
+  "avg_session_minutes": 17.61,
+  "support_tickets": 3,
+  "age": 33,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 57,
+  "monthly_charge": 65.49,
+  "avg_session_minutes": 36.03,
+  "support_tickets": 5,
+  "age": 37,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 63,
+  "monthly_charge": 29.11,
+  "avg_session_minutes": 24.94,
+  "support_tickets": 1,
+  "age": 40,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 14,
+  "monthly_charge": 63.86,
+  "avg_session_minutes": 19.49,
+  "support_tickets": 1,
+  "age": 27,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 34,
+  "monthly_charge": 64.53,
+  "avg_session_minutes": 22.65,
+  "support_tickets": 5,
+  "age": 55,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 5,
+  "monthly_charge": 52.41,
+  "avg_session_minutes": 32.62,
+  "support_tickets": 0,
+  "age": 22,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 32,
+  "monthly_charge": 60.77,
+  "avg_session_minutes": 14.01,
+  "support_tickets": 3,
+  "age": 55,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 9,
+  "monthly_charge": 33.43,
+  "avg_session_minutes": 26.19,
+  "support_tickets": 4,
+  "age": 21,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 30,
+  "monthly_charge": 82.43,
+  "avg_session_minutes": 17.3,
+  "support_tickets": 3,
+  "age": 74,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 69,
+  "monthly_charge": 67.59,
+  "avg_session_minutes": 26.81,
+  "support_tickets": 4,
+  "age": 34,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 11,
+  "monthly_charge": 50.22,
+  "avg_session_minutes": 20.77,
+  "support_tickets": 0,
+  "age": 60,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 10,
+  "monthly_charge": 64.24,
+  "avg_session_minutes": 24.41,
+  "support_tickets": 4,
+  "age": 22,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 51,
+  "monthly_charge": 62.38,
+  "avg_session_minutes": 31.08,
+  "support_tickets": 0,
+  "age": 42,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 17,
+  "monthly_charge": 44.45,
+  "avg_session_minutes": 25.34,
+  "support_tickets": 0,
+  "age": 37,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 1,
+  "monthly_charge": 11.99,
+  "avg_session_minutes": 29.41,
+  "support_tickets": 0,
+  "age": 22,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 27,
+  "monthly_charge": 8.75,
+  "avg_session_minutes": 30.59,
+  "support_tickets": 5,
+  "age": 64,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 13,
+  "monthly_charge": 96.39,
+  "avg_session_minutes": 28.25,
+  "support_tickets": 1,
+  "age": 43,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 45,
+  "monthly_charge": 39.85,
+  "avg_session_minutes": 26.81,
+  "support_tickets": 4,
+  "age": 28,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 40,
+  "monthly_charge": 54.7,
+  "avg_session_minutes": 25.34,
+  "support_tickets": 2,
+  "age": 43,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 56,
+  "monthly_charge": 70.29,
+  "avg_session_minutes": 30.1,
+  "support_tickets": 4,
+  "age": 26,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 44,
+  "monthly_charge": 53.49,
+  "avg_session_minutes": 34.64,
+  "support_tickets": 5,
+  "age": 55,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 6,
+  "monthly_charge": 81.45,
+  "avg_session_minutes": 39.73,
+  "support_tickets": 2,
+  "age": 40,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 5,
+  "monthly_charge": 42.92,
+  "avg_session_minutes": 39.08,
+  "support_tickets": 0,
+  "age": 53,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 67,
+  "monthly_charge": 70.13,
+  "avg_session_minutes": 17.06,
+  "support_tickets": 2,
+  "age": 46,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 53,
+  "monthly_charge": 22.43,
+  "avg_session_minutes": 27.35,
+  "support_tickets": 1,
+  "age": 54,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 55,
+  "monthly_charge": 72.87,
+  "avg_session_minutes": 28.91,
+  "support_tickets": 4,
+  "age": 64,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 58,
+  "monthly_charge": 72.38,
+  "avg_session_minutes": 34.73,
+  "support_tickets": 2,
+  "age": 38,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 23,
+  "monthly_charge": 66.61,
+  "avg_session_minutes": 33.51,
+  "support_tickets": 3,
+  "age": 46,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 38,
+  "monthly_charge": 65.42,
+  "avg_session_minutes": 13.55,
+  "support_tickets": 3,
+  "age": 49,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 14,
+  "monthly_charge": 64.83,
+  "avg_session_minutes": 27.2,
+  "support_tickets": 0,
+  "age": 69,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 1,
+  "monthly_charge": 75.55,
+  "avg_session_minutes": 11.31,
+  "support_tickets": 3,
+  "age": 27,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 43,
+  "monthly_charge": 77.32,
+  "avg_session_minutes": 21.2,
+  "support_tickets": 5,
+  "age": 24,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 16,
+  "monthly_charge": 43.0,
+  "avg_session_minutes": 17.58,
+  "support_tickets": 4,
+  "age": 45,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 43,
+  "monthly_charge": 79.03,
+  "avg_session_minutes": 20.1,
+  "support_tickets": 2,
+  "age": 19,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 64,
+  "monthly_charge": 42.94,
+  "avg_session_minutes": 37.65,
+  "support_tickets": 5,
+  "age": 50,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 19,
+  "monthly_charge": 62.96,
+  "avg_session_minutes": 20.65,
+  "support_tickets": 1,
+  "age": 67,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 19,
+  "monthly_charge": 55.45,
+  "avg_session_minutes": 21.0,
+  "support_tickets": 5,
+  "age": 74,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 13,
+  "monthly_charge": 68.65,
+  "avg_session_minutes": 25.98,
+  "support_tickets": 4,
+  "age": 51,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 24,
+  "monthly_charge": 54.02,
+  "avg_session_minutes": 33.57,
+  "support_tickets": 4,
+  "age": 52,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 55,
+  "monthly_charge": 67.29,
+  "avg_session_minutes": 11.38,
+  "support_tickets": 0,
+  "age": 33,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 48,
+  "monthly_charge": 51.38,
+  "avg_session_minutes": 38.0,
+  "support_tickets": 4,
+  "age": 68,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 48,
+  "monthly_charge": 42.74,
+  "avg_session_minutes": 18.88,
+  "support_tickets": 4,
+  "age": 62,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 3,
+  "monthly_charge": 79.22,
+  "avg_session_minutes": 17.04,
+  "support_tickets": 4,
+  "age": 63,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 57,
+  "monthly_charge": 70.31,
+  "avg_session_minutes": 26.01,
+  "support_tickets": 1,
+  "age": 20,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 53,
+  "monthly_charge": 69.25,
+  "avg_session_minutes": 30.37,
+  "support_tickets": 4,
+  "age": 38,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 16,
+  "monthly_charge": 77.22,
+  "avg_session_minutes": 46.64,
+  "support_tickets": 1,
+  "age": 41,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 43,
+  "monthly_charge": 40.92,
+  "avg_session_minutes": 32.16,
+  "support_tickets": 3,
+  "age": 26,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 52,
+  "monthly_charge": 76.46,
+  "avg_session_minutes": 20.23,
+  "support_tickets": 4,
+  "age": 45,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 4,
+  "monthly_charge": 40.98,
+  "avg_session_minutes": 23.32,
+  "support_tickets": 3,
+  "age": 44,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 6,
+  "monthly_charge": 66.85,
+  "avg_session_minutes": 17.3,
+  "support_tickets": 2,
+  "age": 27,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 16,
+  "monthly_charge": 56.78,
+  "avg_session_minutes": 30.21,
+  "support_tickets": 4,
+  "age": 52,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 1,
+  "monthly_charge": 64.89,
+  "avg_session_minutes": 31.58,
+  "support_tickets": 5,
+  "age": 46,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 44,
+  "monthly_charge": 72.55,
+  "avg_session_minutes": 22.28,
+  "support_tickets": 2,
+  "age": 41,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 13,
+  "monthly_charge": 60.38,
+  "avg_session_minutes": 34.01,
+  "support_tickets": 4,
+  "age": 38,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 41,
+  "monthly_charge": 43.43,
+  "avg_session_minutes": 11.43,
+  "support_tickets": 4,
+  "age": 53,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 56,
+  "monthly_charge": 76.73,
+  "avg_session_minutes": 21.1,
+  "support_tickets": 5,
+  "age": 61,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 19,
+  "monthly_charge": 81.19,
+  "avg_session_minutes": 17.53,
+  "support_tickets": 3,
+  "age": 45,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 39,
+  "monthly_charge": 72.33,
+  "avg_session_minutes": 20.2,
+  "support_tickets": 5,
+  "age": 46,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 46,
+  "monthly_charge": 78.66,
+  "avg_session_minutes": 11.83,
+  "support_tickets": 4,
+  "age": 49,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 44,
+  "monthly_charge": 28.26,
+  "avg_session_minutes": 32.56,
+  "support_tickets": 3,
+  "age": 63,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 19,
+  "monthly_charge": 61.3,
+  "avg_session_minutes": 17.28,
+  "support_tickets": 1,
+  "age": 67,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 43,
+  "monthly_charge": 57.95,
+  "avg_session_minutes": 23.85,
+  "support_tickets": 3,
+  "age": 26,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 17,
+  "monthly_charge": 24.82,
+  "avg_session_minutes": 34.38,
+  "support_tickets": 2,
+  "age": 60,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 46,
+  "monthly_charge": 61.96,
+  "avg_session_minutes": 37.78,
+  "support_tickets": 2,
+  "age": 18,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 21,
+  "monthly_charge": 60.06,
+  "avg_session_minutes": 34.36,
+  "support_tickets": 4,
+  "age": 72,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 23,
+  "monthly_charge": 32.89,
+  "avg_session_minutes": 7.03,
+  "support_tickets": 2,
+  "age": 36,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 68,
+  "monthly_charge": 44.88,
+  "avg_session_minutes": 22.47,
+  "support_tickets": 5,
+  "age": 48,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 52,
+  "monthly_charge": 61.53,
+  "avg_session_minutes": 22.09,
+  "support_tickets": 1,
+  "age": 50,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 10,
+  "monthly_charge": 70.83,
+  "avg_session_minutes": 19.42,
+  "support_tickets": 4,
+  "age": 35,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 2,
+  "monthly_charge": 72.74,
+  "avg_session_minutes": 18.61,
+  "support_tickets": 0,
+  "age": 41,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 7,
+  "monthly_charge": 40.1,
+  "avg_session_minutes": 20.47,
+  "support_tickets": 1,
+  "age": 48,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 27,
+  "monthly_charge": 40.62,
+  "avg_session_minutes": 29.6,
+  "support_tickets": 2,
+  "age": 21,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 64,
+  "monthly_charge": 50.9,
+  "avg_session_minutes": 21.19,
+  "support_tickets": 4,
+  "age": 53,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 4,
+  "monthly_charge": 59.1,
+  "avg_session_minutes": 14.11,
+  "support_tickets": 5,
+  "age": 29,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 9,
+  "monthly_charge": 49.65,
+  "avg_session_minutes": 12.25,
+  "support_tickets": 0,
+  "age": 52,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 9,
+  "monthly_charge": 56.55,
+  "avg_session_minutes": 26.05,
+  "support_tickets": 3,
+  "age": 22,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 19,
+  "monthly_charge": 72.78,
+  "avg_session_minutes": 11.1,
+  "support_tickets": 4,
+  "age": 33,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 65,
+  "monthly_charge": 72.32,
+  "avg_session_minutes": 30.52,
+  "support_tickets": 4,
+  "age": 72,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 23,
+  "monthly_charge": 62.49,
+  "avg_session_minutes": 20.93,
+  "support_tickets": 3,
+  "age": 73,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 43,
+  "monthly_charge": 39.46,
+  "avg_session_minutes": 20.86,
+  "support_tickets": 4,
+  "age": 45,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 1,
+  "monthly_charge": 51.16,
+  "avg_session_minutes": 26.75,
+  "support_tickets": 0,
+  "age": 67,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 57,
+  "monthly_charge": 70.15,
+  "avg_session_minutes": 22.03,
+  "support_tickets": 4,
+  "age": 55,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 40,
+  "monthly_charge": 75.66,
+  "avg_session_minutes": 30.61,
+  "support_tickets": 1,
+  "age": 26,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 44,
+  "monthly_charge": 79.12,
+  "avg_session_minutes": 14.63,
+  "support_tickets": 1,
+  "age": 58,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 68,
+  "monthly_charge": 40.9,
+  "avg_session_minutes": 10.38,
+  "support_tickets": 2,
+  "age": 73,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 41,
+  "monthly_charge": 51.64,
+  "avg_session_minutes": 40.69,
+  "support_tickets": 1,
+  "age": 19,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 6,
+  "monthly_charge": 38.22,
+  "avg_session_minutes": 26.31,
+  "support_tickets": 0,
+  "age": 41,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 57,
+  "monthly_charge": 7.05,
+  "avg_session_minutes": 4.26,
+  "support_tickets": 4,
+  "age": 23,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 40,
+  "monthly_charge": 40.34,
+  "avg_session_minutes": 38.58,
+  "support_tickets": 0,
+  "age": 25,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 45,
+  "monthly_charge": 28.12,
+  "avg_session_minutes": 13.61,
+  "support_tickets": 5,
+  "age": 55,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 4,
+  "monthly_charge": 85.09,
+  "avg_session_minutes": 41.45,
+  "support_tickets": 2,
+  "age": 35,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 37,
+  "monthly_charge": 68.54,
+  "avg_session_minutes": 39.55,
+  "support_tickets": 5,
+  "age": 39,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 64,
+  "monthly_charge": 48.46,
+  "avg_session_minutes": 32.05,
+  "support_tickets": 0,
+  "age": 55,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 40,
+  "monthly_charge": 61.22,
+  "avg_session_minutes": 25.01,
+  "support_tickets": 2,
+  "age": 32,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 30,
+  "monthly_charge": 67.48,
+  "avg_session_minutes": 17.99,
+  "support_tickets": 0,
+  "age": 52,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 41,
+  "monthly_charge": 91.53,
+  "avg_session_minutes": 32.66,
+  "support_tickets": 0,
+  "age": 32,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 3,
+  "monthly_charge": 74.01,
+  "avg_session_minutes": 21.79,
+  "support_tickets": 1,
+  "age": 51,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 25,
+  "monthly_charge": 87.5,
+  "avg_session_minutes": 33.73,
+  "support_tickets": 5,
+  "age": 21,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 61,
+  "monthly_charge": 68.8,
+  "avg_session_minutes": 22.76,
+  "support_tickets": 1,
+  "age": 47,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 48,
+  "monthly_charge": 83.51,
+  "avg_session_minutes": 12.35,
+  "support_tickets": 3,
+  "age": 35,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 20,
+  "monthly_charge": 86.06,
+  "avg_session_minutes": 19.37,
+  "support_tickets": 3,
+  "age": 48,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 29,
+  "monthly_charge": 76.85,
+  "avg_session_minutes": 25.51,
+  "support_tickets": 2,
+  "age": 30,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 5,
+  "monthly_charge": 60.68,
+  "avg_session_minutes": 21.07,
+  "support_tickets": 5,
+  "age": 62,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 47,
+  "monthly_charge": 79.81,
+  "avg_session_minutes": 26.15,
+  "support_tickets": 0,
+  "age": 36,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 57,
+  "monthly_charge": 53.03,
+  "avg_session_minutes": 17.6,
+  "support_tickets": 5,
+  "age": 67,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 35,
+  "monthly_charge": 85.82,
+  "avg_session_minutes": 38.01,
+  "support_tickets": 0,
+  "age": 30,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 45,
+  "monthly_charge": 55.19,
+  "avg_session_minutes": 20.82,
+  "support_tickets": 1,
+  "age": 33,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 54,
+  "monthly_charge": 47.87,
+  "avg_session_minutes": 29.23,
+  "support_tickets": 1,
+  "age": 55,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 57,
+  "monthly_charge": 94.05,
+  "avg_session_minutes": 11.6,
+  "support_tickets": 0,
+  "age": 49,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 50,
+  "monthly_charge": 52.73,
+  "avg_session_minutes": 31.72,
+  "support_tickets": 4,
+  "age": 56,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 50,
+  "monthly_charge": 63.07,
+  "avg_session_minutes": 37.5,
+  "support_tickets": 1,
+  "age": 73,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 3,
+  "monthly_charge": 40.98,
+  "avg_session_minutes": 29.92,
+  "support_tickets": 4,
+  "age": 37,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 24,
+  "monthly_charge": 47.54,
+  "avg_session_minutes": 23.13,
+  "support_tickets": 1,
+  "age": 52,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 56,
+  "monthly_charge": 54.02,
+  "avg_session_minutes": 17.63,
+  "support_tickets": 2,
+  "age": 44,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 56,
+  "monthly_charge": 42.33,
+  "avg_session_minutes": 29.98,
+  "support_tickets": 1,
+  "age": 66,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 64,
+  "monthly_charge": 82.11,
+  "avg_session_minutes": 29.77,
+  "support_tickets": 5,
+  "age": 44,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 22,
+  "monthly_charge": 47.09,
+  "avg_session_minutes": 14.64,
+  "support_tickets": 3,
+  "age": 58,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 24,
+  "monthly_charge": 37.53,
+  "avg_session_minutes": 25.25,
+  "support_tickets": 5,
+  "age": 51,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 69,
+  "monthly_charge": 80.2,
+  "avg_session_minutes": 29.48,
+  "support_tickets": 1,
+  "age": 66,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 53,
+  "monthly_charge": 72.87,
+  "avg_session_minutes": 18.86,
+  "support_tickets": 0,
+  "age": 42,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 3,
+  "monthly_charge": 18.27,
+  "avg_session_minutes": 30.01,
+  "support_tickets": 2,
+  "age": 31,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 61,
+  "monthly_charge": 49.89,
+  "avg_session_minutes": 22.96,
+  "support_tickets": 4,
+  "age": 37,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 23,
+  "monthly_charge": 78.05,
+  "avg_session_minutes": 36.8,
+  "support_tickets": 3,
+  "age": 65,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 36,
+  "monthly_charge": 46.31,
+  "avg_session_minutes": 14.92,
+  "support_tickets": 2,
+  "age": 64,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 54,
+  "monthly_charge": 55.14,
+  "avg_session_minutes": 29.34,
+  "support_tickets": 4,
+  "age": 52,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 10,
+  "monthly_charge": 55.83,
+  "avg_session_minutes": 26.08,
+  "support_tickets": 4,
+  "age": 65,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 46,
+  "monthly_charge": 19.51,
+  "avg_session_minutes": 10.05,
+  "support_tickets": 5,
+  "age": 43,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 52,
+  "monthly_charge": 44.18,
+  "avg_session_minutes": 17.65,
+  "support_tickets": 3,
+  "age": 48,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 47,
+  "monthly_charge": 74.01,
+  "avg_session_minutes": 18.25,
+  "support_tickets": 5,
+  "age": 23,
+  "is_churned": "Yes"
+ },
+ {
+  "tenure_months": 60,
+  "monthly_charge": 86.28,
+  "avg_session_minutes": 32.6,
+  "support_tickets": 0,
+  "age": 61,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 70,
+  "monthly_charge": 58.85,
+  "avg_session_minutes": 22.24,
+  "support_tickets": 1,
+  "age": 39,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 23,
+  "monthly_charge": 58.33,
+  "avg_session_minutes": 25.05,
+  "support_tickets": 1,
+  "age": 62,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 11,
+  "monthly_charge": 70.26,
+  "avg_session_minutes": 26.31,
+  "support_tickets": 0,
+  "age": 19,
+  "is_churned": "No"
+ },
+ {
+  "tenure_months": 16,
+  "monthly_charge": 63.31,
+  "avg_session_minutes": 45.85,
+  "support_tickets": 5,
+  "age": 65,
+  "is_churned": "Yes"
+ }
+]

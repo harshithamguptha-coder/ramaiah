@@ -3,34 +3,67 @@
 import { Link } from 'react-router-dom'
 import RequireAnalysis from '../components/RequireAnalysis'
 import PipelineStepper from '../components/PipelineStepper'
-import { Alert, Badge, Button, Card, CardBody, CardFooter, CardHeader, MockBadge, StatTile } from '../components/ui'
+import { Alert, Badge, Button, Card, CardBody, CardFooter, CardHeader, SourceBadge, StatTile } from '../components/ui'
 import { ColumnChart } from '../components/charts'
 import { useAnalysisContext } from '../context/AnalysisContext'
 import { formatSeconds } from '../utils/format'
 
 export default function ClassicalAnalysis() {
   const { classical, pipeline } = useAnalysisContext()
-  if (!classical) return null
-
-  const { candidates, best_model: best, baseline_model: baseline, estimated_complexity: complexity } = classical
-  const resources = classical.resource_requirements
-  const size = classical.dataset_size
 
   return (
     <RequireAnalysis
       title="Classical AI Analysis"
       subtitle="Pipeline stage 3 of 7 — classical algorithm candidates, baseline and resource estimates."
+      stage={classical}
+      stageLabel="Classical AI analysis"
     >
+      {classical ? <ClassicalStage classical={classical} pipeline={pipeline} /> : null}
+    </RequireAnalysis>
+  )
+}
+
+/**
+ * The stage body. Split out so the measured data is only touched once it is
+ * known to exist — the page must never return `null` on missing data, or the
+ * route renders as a blank page instead of explaining itself.
+ */
+function ClassicalStage({ classical, pipeline }) {
+  const { candidates, best_model: best, baseline_model: baseline, estimated_complexity: complexity } = classical
+  const resources = classical.resource_requirements
+  const size = classical.dataset_size
+  // Regression has no accuracy/F1, so the table headers follow the measured task.
+  const isRegression = classical.task === 'regression'
+
+  return (
+    <>
       <Card accent="classical">
-        <CardHeader title="Analysis pipeline" actions={<MockBadge label="All values mocked" />} />
+        <CardHeader title="Analysis pipeline" actions={<SourceBadge block={classical} label="Models trained" />} />
         <CardBody>
           <PipelineStepper pipeline={pipeline} current={2} />
         </CardBody>
       </Card>
 
       <div className="grid grid--4">
-        <StatTile label="Best model" value={best.name} hint={`${(best.accuracy * 100).toFixed(1)}% accuracy`} />
-        <StatTile label="Baseline" value={baseline.name} hint="Reference to beat" />
+        <StatTile
+          label="Best model"
+          value={best.name}
+          hint={best.summary || `${((best.accuracy ?? 0) * 100).toFixed(1)}% accuracy`}
+        />
+        <StatTile
+          label="Baseline"
+          value={baseline?.name || '—'}
+          hint={baseline?.summary || 'Trivial reference to beat'}
+        />
+        <StatTile
+          label="Primary metric"
+          value={classical.primary_metric || '—'}
+          hint={
+            classical.status === 'completed'
+              ? `${candidates.length} models trained`
+              : classical.status
+          }
+        />
         <StatTile label="Dataset size" value={`${size.size_mb} MB`} hint={size.label} />
         <StatTile
           label="Expected runtime"
@@ -45,7 +78,7 @@ export default function ClassicalAnalysis() {
             <CardHeader
               title="Algorithm candidates"
               subtitle={`${candidates.length} models for a ${size.rows.toLocaleString()} × ${size.columns} dataset`}
-              actions={<MockBadge />}
+              actions={<SourceBadge block={classical} label="Measured" />}
             />
             <CardBody tight>
               <div className="table-wrap">
@@ -54,8 +87,8 @@ export default function ClassicalAnalysis() {
                     <tr>
                       <th>Algorithm</th>
                       <th>Family</th>
-                      <th className="num">Accuracy</th>
-                      <th className="num">F1</th>
+                      <th className="num">{isRegression ? 'R2' : 'Accuracy'}</th>
+                      <th className="num">{isRegression ? 'RMSE' : 'F1'}</th>
                       <th className="num">Training time</th>
                       <th>Complexity</th>
                     </tr>
@@ -65,12 +98,16 @@ export default function ClassicalAnalysis() {
                       <tr key={model.name}>
                         <td>
                           <div style={{ fontWeight: 650 }}>{model.name}</div>
-                          {model.name === best.name && <Badge tone="success">Expected best</Badge>}
-                          {model.name === baseline.name && <Badge tone="neutral">Baseline</Badge>}
+                          {model.name === best.name && <Badge tone="success">Best</Badge>}
+                          {model.name === baseline?.name && <Badge tone="neutral">Baseline</Badge>}
                         </td>
                         <td className="muted">{model.family}</td>
-                        <td className="num">{(model.accuracy * 100).toFixed(1)}%</td>
-                        <td className="num">{(model.f1_score * 100).toFixed(1)}%</td>
+                        <td className="num">
+                          {isRegression ? model.r2 : `${((model.accuracy ?? 0) * 100).toFixed(1)}%`}
+                        </td>
+                        <td className="num">
+                          {isRegression ? model.rmse : `${((model.f1_score ?? 0) * 100).toFixed(1)}%`}
+                        </td>
                         <td className="num">{formatSeconds(model.training_time_sec)}</td>
                         <td className="mono small">{model.complexity}</td>
                       </tr>
@@ -83,13 +120,13 @@ export default function ClassicalAnalysis() {
           </Card>
 
           <Card>
-            <CardHeader title="Expected accuracy by candidate" />
+            <CardHeader title={`Measured ${isRegression ? 'R2' : 'accuracy'} by candidate`} />
             <CardBody>
               <ColumnChart
-                suffix="%"
+                suffix={isRegression ? '' : '%'}
                 data={candidates.map((m) => ({
                   label: m.name.length > 16 ? `${m.name.slice(0, 15)}…` : m.name,
-                  value: m.accuracy * 100,
+                  value: isRegression ? (m.r2 ?? 0) * 100 : (m.accuracy ?? 0) * 100,
                   tone: m.name === best.name ? 'success' : 'classical',
                 }))}
               />
@@ -135,20 +172,26 @@ export default function ClassicalAnalysis() {
             <CardBody>
               <dl className="dl">
                 <dt>Model</dt>
-                <dd>{baseline.name}</dd>
-                <dt>Accuracy</dt>
-                <dd>{(baseline.accuracy * 100).toFixed(1)}%</dd>
+                <dd>{baseline?.name || '—'}</dd>
+                <dt>Score</dt>
+                <dd>{baseline?.summary || '—'}</dd>
                 <dt>Training</dt>
-                <dd>{formatSeconds(baseline.training_time_sec)}</dd>
+                <dd>{formatSeconds(baseline?.training_time_sec)}</dd>
               </dl>
-              <p className="small muted mt-2">{baseline.role}</p>
+              <p className="small muted mt-2">{baseline?.role}</p>
             </CardBody>
           </Card>
 
-          <Alert tone="warning" title="No model was trained">
-            These accuracies and timings are illustrative placeholders. The real stage will train
-            each candidate with cross-validation and report measured metrics for your data.
-          </Alert>
+          {classical.status === 'completed' ? (
+            <Alert tone="info" title="These scores were measured on your data">
+              Each model was trained on an 80% split and evaluated on a held-out 20%. They
+              are a baseline reference, not a tuned best-in-class result.
+            </Alert>
+          ) : (
+            <Alert tone="warning" title="No model was trained">
+              {classical.summary}
+            </Alert>
+          )}
 
           <div className="row row--between">
             <Link to="/analysis">
@@ -160,6 +203,6 @@ export default function ClassicalAnalysis() {
           </div>
         </div>
       </div>
-    </RequireAnalysis>
+    </>
   )
 }

@@ -2,7 +2,7 @@
 
 import { Link } from 'react-router-dom'
 import PageHeader from '../components/PageHeader'
-import { Alert, Badge, Button, Card, CardBody, CardHeader, EmptyState, LoadingBlock, MockBadge, StatTile } from '../components/ui'
+import { Alert, Badge, Button, Card, CardBody, CardHeader, EmptyState, LoadingBlock, StatTile } from '../components/ui'
 import { useAnalysisContext } from '../context/AnalysisContext'
 import { useAsync } from '../hooks/useAsync'
 import api from '../services/api'
@@ -75,10 +75,12 @@ export default function Dashboard() {
         }
       />
 
-      <Alert tone="warning" title="Prototype — analysis engines are mocked">
-        Dataset upload and structural profiling are real. Classical benchmarking, quantum
-        suitability, comparison and recommendation return <strong>placeholder data</strong>{' '}
-        until the real engines are implemented. Every mocked value is labelled in the UI.
+      <Alert tone="info" title="Decision support, not a quantum advocate">
+        Dataset statistics and the classical baseline are <strong>measured</strong> on your
+        data. The quantum score is a <strong>theoretical suitability analysis</strong>: it
+        estimates how worth investigating quantum methods are, not how well they would
+        perform. No quantum circuit is executed, and the recommendation defaults to Classical
+        AI unless the problem earns otherwise.
       </Alert>
 
       <Card accent="accent">
@@ -126,7 +128,7 @@ export default function Dashboard() {
             actions={
               <>
                 <Badge tone={isComplete ? 'success' : 'info'}>{isComplete ? 'Complete' : 'Uploaded'}</Badge>
-                <MockBadge />
+                <Badge tone="success" title="Produced by the real analysis engine.">Real analysis</Badge>
               </>
             }
           />
@@ -136,7 +138,7 @@ export default function Dashboard() {
               <StatTile label="Columns" value={analysis.dataset.column_count ?? '—'} />
               <StatTile
                 label="Classical best"
-                value={classical ? `${(classical.best_model.accuracy * 100).toFixed(1)}%` : '—'}
+                value={classical?.best_model?.summary || (classical ? 'Not evaluated' : '—')}
                 hint={classical?.best_model?.name}
               />
               <StatTile

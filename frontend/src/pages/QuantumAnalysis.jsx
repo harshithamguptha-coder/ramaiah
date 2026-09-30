@@ -3,7 +3,7 @@
 import { Link } from 'react-router-dom'
 import RequireAnalysis from '../components/RequireAnalysis'
 import PipelineStepper from '../components/PipelineStepper'
-import { Alert, Badge, Button, Card, CardBody, CardFooter, CardHeader, MockBadge, StatTile } from '../components/ui'
+import { Alert, Badge, Button, Card, CardBody, CardFooter, CardHeader, MeterRow, SourceBadge, StatTile } from '../components/ui'
 import { BarChart, ScoreGauge } from '../components/charts'
 import { useAnalysisContext } from '../context/AnalysisContext'
 
@@ -11,18 +11,31 @@ const SUITABILITY_TONE = { High: 'success', Moderate: 'warning', Low: 'danger' }
 
 export default function QuantumAnalysis() {
   const { quantum, pipeline } = useAnalysisContext()
-  if (!quantum) return null
-
-  const circuits = quantum.circuit_complexity
-  const resources = quantum.estimated_resources
 
   return (
     <RequireAnalysis
       title="Quantum AI Analysis"
       subtitle="Pipeline stage 4 of 7 — quantum suitability, candidate algorithms and resource estimates."
+      stage={quantum}
+      stageLabel="Quantum AI analysis"
     >
+      {quantum ? <QuantumStage quantum={quantum} pipeline={pipeline} /> : null}
+    </RequireAnalysis>
+  )
+}
+
+/** Stage body — see the note in ClassicalAnalysis.jsx about the split. */
+function QuantumStage({ quantum, pipeline }) {
+  const circuits = quantum.circuit_complexity
+  const resources = quantum.estimated_resources
+
+  return (
+    <>
       <Card accent="quantum">
-        <CardHeader title="Analysis pipeline" actions={<MockBadge label="All values mocked" />} />
+        <CardHeader
+          title="Analysis pipeline"
+          actions={<SourceBadge block={quantum} label="Factor model" />}
+        />
         <CardBody>
           <PipelineStepper pipeline={pipeline} current={3} />
         </CardBody>
@@ -59,7 +72,7 @@ export default function QuantumAnalysis() {
             <CardHeader
               title="Candidate quantum algorithms"
               subtitle={`Primary candidate: ${quantum.primary_algorithm}`}
-              actions={<MockBadge />}
+              actions={<SourceBadge block={quantum} label="Scored" />}
             />
             <CardBody tight>
               <div className="table-wrap">
@@ -80,6 +93,11 @@ export default function QuantumAnalysis() {
                         <td>
                           <div style={{ fontWeight: 650 }}>{algo.name}</div>
                           <div className="small muted">{algo.notes}</div>
+                          {algo.blocking_issues?.length > 0 && (
+                            <div className="small" style={{ color: 'var(--danger)' }}>
+                              Blocked: {algo.blocking_issues.join(' ')}
+                            </div>
+                          )}
                         </td>
                         <td className="muted">{algo.family}</td>
                         <td className="num">{algo.qubits_required}</td>
@@ -147,6 +165,43 @@ export default function QuantumAnalysis() {
           </Card>
 
           <Card>
+            <CardHeader
+              title="Scoring factors"
+              subtitle={quantum.scoring?.formula || 'Weighted sum of normalised factors.'}
+            />
+            <CardBody>
+              <div className="stack stack--sm">
+                {(quantum.scoring?.factors || []).map((factor) => (
+                  <MeterRow
+                    key={factor.key}
+                    label={factor.label || factor.key}
+                    value={(factor.normalised ?? 0) * 100}
+                    tone={
+                      factor.normalised >= 0.66 ? 'success' : factor.normalised >= 0.33 ? 'warning' : 'danger'
+                    }
+                    displayValue={`${Math.round((factor.normalised ?? 0) * 100)}% × ${factor.weight}`}
+                  />
+                ))}
+              </div>
+              {quantum.scoring?.caps_applied?.length > 0 && (
+                <div className="mt-4">
+                  <div className="stat__label mb-2">Hard caps applied</div>
+                  <ul className="small stack stack--sm">
+                    {quantum.scoring.caps_applied.map((cap) => (
+                      <li key={cap.cap}>
+                        Capped at {cap.cap}/100 — {cap.why}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              <p className="small muted mt-2">
+                Raw score {quantum.scoring?.raw_score}/100 before caps.
+              </p>
+            </CardBody>
+          </Card>
+
+          <Card>
             <CardHeader title="Circuit complexity" />
             <CardBody>
               <dl className="dl">
@@ -194,10 +249,9 @@ export default function QuantumAnalysis() {
             </CardBody>
           </Card>
 
-          <Alert tone="warning" title="No circuit was built or executed">
-            Qubit counts, depths and feasibility are illustrative. The real stage will run a
-            feature-reduction step, construct the circuit, and execute it on a simulator before any
-            hardware is involved.
+          <Alert tone="info" title="This is a suitability analysis, not an experiment">
+            {quantum.score_interpretation ||
+              'No quantum circuit was built or executed. The score above measures how worth investigating quantum methods are, not how well they would perform.'}
           </Alert>
 
           <div className="row row--between">
@@ -210,6 +264,7 @@ export default function QuantumAnalysis() {
           </div>
         </div>
       </div>
-    </RequireAnalysis>
+    </>
   )
 }
+

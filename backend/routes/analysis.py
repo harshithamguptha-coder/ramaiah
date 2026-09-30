@@ -20,18 +20,31 @@ logger = get_logger(__name__)
 router = APIRouter(prefix="/api", tags=["analysis"])
 
 
-@router.post("/analyze", summary="Start the analysis pipeline for an uploaded dataset")
+@router.post(
+    "/analyze",
+    summary="Run the analysis pipeline for an uploaded dataset",
+    responses={
+        404: {"description": "Unknown analysis id"},
+        409: {"description": "The stored file for this analysis is gone"},
+        415: {"description": "Unsupported dataset file type"},
+        422: {"description": "The dataset could not be parsed, or the problem "
+                             "description is invalid"},
+    },
+)
 def start_analysis(request: AnalyzeRequest) -> dict[str, Any]:
     """Run every pipeline stage and return the full analysis payload.
 
-    The analysis intelligence is mocked; this endpoint currently exercises
-    orchestration, persistence and the response contract only.
+    The result is produced by the real analysis engine: the dataset is parsed
+    and profiled, a classical baseline is trained and measured, quantum
+    suitability is scored from transparent factors, and the recommendation is
+    derived from decision rules over those measurements.
     """
     record = analysis_service.start_analysis(
         analysis_id=request.analysis_id,
         problem_description=request.problem_description,
+        target_column=request.target_column,
     )
-    logger.info("Analysis %s started", record["analysis_id"])
+    logger.info("Analysis %s completed", record["analysis_id"])
     return record
 
 
@@ -61,7 +74,8 @@ def get_status(analysis_id: str) -> dict[str, Any]:
         "analysis_id": record["analysis_id"],
         "status": record.get("status", "unknown"),
         "pipeline": record.get("pipeline", []),
-        "data_source": record.get("data_source", "mock"),
+        "data_source": record.get("data_source", "real"),
+        "warnings": record.get("warnings", []),
     }
 
 
@@ -71,7 +85,7 @@ def get_status(analysis_id: str) -> dict[str, Any]:
     summary="Delete an analysis",
 )
 def delete_analysis(analysis_id: str) -> MessageResponse:
-    """Remove a stored analysis."""
+    """Remove a stored analysis and release its cached dataset."""
     if not analysis_service.delete_analysis(analysis_id):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

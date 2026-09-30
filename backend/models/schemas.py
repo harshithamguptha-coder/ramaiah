@@ -1,10 +1,26 @@
 """Typed request/response contracts for the API.
 
-The analysis payload is intentionally a loose ``dict``-shaped object for now.
-Once real engines exist these can be promoted to strict nested models without
-breaking the frontend, because the top-level keys are already fixed:
-``dataset``, ``problem``, ``classical_analysis``, ``quantum_analysis``,
-``comparison``, ``recommendation``, ``report``.
+The analysis payload is intentionally a loose ``dict``-shaped object, because
+the frontend consumes a stable set of top-level keys and adding strict nested
+models would risk breaking it. Those keys are now all populated by the real
+analysis engine:
+
+===========================  =========================================
+Key                         Produced by
+===========================  =========================================
+``dataset``                 services/dataset_service.py
+``problem``                 services/problem_service.py
+``classical_analysis``      services/classical_service.py
+``quantum_analysis``        services/quantum_service.py
+``comparison``              services/comparison_service.py
+``recommendation``          services/recommendation_service.py
+``report``                  services/report_service.py
+``warnings``                services/analysis_service.py (flattened)
+===========================  =========================================
+
+Every block additionally carries ``is_mock: false`` so the UI can tell a measured
+value from a placeholder, and ``warnings`` for anything a reader should know
+before trusting the numbers.
 """
 
 from __future__ import annotations
@@ -19,7 +35,7 @@ class HealthResponse(BaseModel):
     service: str
     version: str
     environment: str
-    mode: str = Field(description="'mock' while analysis engines are placeholders")
+    mode: str = Field(description="'real' - the analysis engine produces measured values")
     time: str
 
 
@@ -39,7 +55,7 @@ class UploadResponse(BaseModel):
     dataset: dict[str, Any]
     problem: dict[str, Any]
     pipeline: list[dict[str, Any]]
-    data_source: str = "mock"
+    data_source: str = "real"
 
 
 class AnalyzeRequest(BaseModel):
@@ -50,8 +66,17 @@ class AnalyzeRequest(BaseModel):
     problem_description: str | None = Field(
         default=None, max_length=2000, description="Optional AI problem statement."
     )
+    target_column: str | None = Field(
+        default=None,
+        max_length=200,
+        description=(
+            "Target/label column to use. Omit to auto-detect from the column name. "
+            "A name that is not present in the dataset is ignored with a warning."
+        ),
+    )
     include_mock: bool = Field(
-        default=True, description="Kept for API stability; mock data is the only source now."
+        default=False,
+        description="Retained for API stability; the engine no longer produces mock data.",
     )
 
 

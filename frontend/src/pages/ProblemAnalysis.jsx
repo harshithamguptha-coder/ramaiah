@@ -3,7 +3,7 @@
 import { Link } from 'react-router-dom'
 import RequireAnalysis from '../components/RequireAnalysis'
 import PipelineStepper from '../components/PipelineStepper'
-import { Alert, Badge, Button, Card, CardBody, CardFooter, CardHeader, MockBadge, StatTile } from '../components/ui'
+import { Alert, Badge, Button, Card, CardBody, CardFooter, CardHeader, SourceBadge, StatTile } from '../components/ui'
 import { useAnalysisContext } from '../context/AnalysisContext'
 import { formatBytes, formatDateTime, formatNumber } from '../utils/format'
 
@@ -15,6 +15,8 @@ export default function ProblemAnalysis() {
     <RequireAnalysis
       title="Dataset & Problem Analysis"
       subtitle="Pipeline stage 2 of 7 — the uploaded file is profiled and the problem statement is classified."
+      stage={problem}
+      stageLabel="Dataset & problem analysis"
     >
       <Card accent="accent">
         <CardHeader
@@ -52,9 +54,34 @@ export default function ProblemAnalysis() {
               <div className="mt-4">
                 <div className="stat__label mb-2">Target column</div>
                 {dataset.target_column ? (
-                  <div className="chip-row">
-                    <Badge tone="brand">{dataset.target_column}</Badge>
-                    <span className="small muted">detected by column-name heuristic</span>
+                  <div className="stack stack--sm">
+                    <div className="chip-row">
+                      <Badge tone="brand">{dataset.target_column}</Badge>
+                      {dataset.class_count > 1 && (
+                        <Badge tone="neutral">
+                          {dataset.class_count} class{dataset.class_count === 1 ? '' : 'es'}
+                        </Badge>
+                      )}
+                      <span className="small muted">
+                        {dataset.target_source || 'detected automatically'}
+                      </span>
+                    </div>
+                    {dataset.target_candidates?.length > 0 && (
+                      <details className="small muted">
+                        <summary style={{ cursor: 'pointer' }}>
+                          Why this column ({dataset.target_candidates.length} candidate
+                          {dataset.target_candidates.length === 1 ? '' : 's'} considered)
+                        </summary>
+                        <ul className="stack stack--sm" style={{ marginTop: 'var(--sp-2)' }}>
+                          {dataset.target_candidates.map((candidate) => (
+                            <li key={candidate.column}>
+                              <strong>{candidate.column}</strong> — score {candidate.score}
+                              {candidate.reasons?.length > 0 && `: ${candidate.reasons.join(' ')}`}
+                            </li>
+                          ))}
+                        </ul>
+                      </details>
+                    )}
                   </div>
                 ) : (
                   <div className="small muted">
@@ -95,7 +122,7 @@ export default function ProblemAnalysis() {
 
         <div className="stack">
           <Card accent="accent">
-            <CardHeader title="Problem classification" actions={<MockBadge label="Mock inference" />} />
+            <CardHeader title="Problem classification" actions={<SourceBadge block={problem} label="Inferred" />} />
             <CardBody>
               <dl className="dl">
                 <dt>Task type</dt>
@@ -131,9 +158,17 @@ export default function ProblemAnalysis() {
             </CardBody>
           </Card>
 
-          <Alert tone="info" title="What is real and what is mocked">
-            Row/column counts, feature types, missing values and the target column are read from
-            your file. The task type, confidence and keywords come from a keyword heuristic.
+          <Alert tone="info" title="What is measured and what is inferred">
+            Row/column counts, feature types, missing values, duplicates, class distribution
+            and the target column are read from your file. The task type is inferred from
+            the dataset structure, with the problem statement used to disambiguate.
+            {problem.detection?.signals?.length > 0 && (
+              <ul className="small mt-2">
+                {problem.detection.signals.map((signal) => (
+                  <li key={signal}>{signal}</li>
+                ))}
+              </ul>
+            )}
           </Alert>
 
           <div className="row row--between">
